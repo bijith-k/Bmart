@@ -1,0 +1,71 @@
+<!-- 
+  
+<%- include('../partials/user_header') %>
+
+<section class="head bg-dark" style="padding-top: 80px;">
+  <div class="container p-5">
+    <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h2 style="color: white;">Register here</h2>
+        <nav class="d-flex align-items-center">
+          <a href="index.html" >Account &#8594</span></a>
+          <a href="login.ejs" >Register</a>
+        </nav>
+    </div>
+  </div>
+</section>
+
+================Login Box Area =================
+<section class="register py-5 bg-light">
+  <div class="container">
+   <% if (message) { %>
+     <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+       <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+       <strong><%= message.message %> </strong>
+     </div> 
+     <% } %>
+    <div class="row g-0" id="reg-row">
+      
+      <div class="col-lg-6 text-center py-5">
+        <h2>REGISTER NOW</h2>
+
+        <form action="/admin/signup" method="post">
+          <div class="form-row  pt-5">
+            <div class="offset-1 col-lg-10">
+<input type="text" name="name" class="inp" placeholder=" Enter your name" required pattern="[A-Z a-z]{3,22}">
+            </div>
+          </div>
+          <div class="form-row pt-3">
+            <div class="offset-1 col-lg-10">
+<input type="email" name="email" class="inp" placeholder=" Enter your email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+            </div>
+          </div>
+          <div class="form-row pt-3">
+            <div class="offset-1 col-lg-10">
+<input type="tel" name="phone" class="inp" placeholder=" Enter your number"  \>
+            </div>
+          </div>
+          
+         <div class="form-row pt-3">
+           <div class="offset-1 col-lg-10">
+<input type="password" name="password" class="inp" placeholder=" Enter your password" required pattern=".{8,}">
+           </div>
+         </div>
+         <div class="alert-text signup__alert">
+           <span class="help__text">At least 8 character</span>
+         </div>
+          <div class="form-row pt-4 pb-4">
+            <div class="offset-1 col-lg-10">
+ <button type="submit" class="btn1">SIGNUP</button>
+            </div>
+          </div>
+        </form>
+        <p  class="pt-3">Already have account?<a href="/user-signin">Login</a></p>
+      </div>
+      
+     </div>
+    </div>
+  </div>
+ </section>
+
+  -->

@@ -1,0 +1,94 @@
+<%- include('../partials/admin_headside') %>
+
+  <section>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-6  mx-4">
+          <form action="/admin/add-product" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
+            <label for="name">Enter product name</label>
+            <input type="text" name="name" class="form-control" required>
+            <label for="description">Enter product description</label>
+            <input type="text" name="description" class="form-control" required>
+            <label for="category" style="display: block;">Enter category</label>
+             
+            <select name="category" id="catform" style="display: block; width:100%; border: none;">
+              
+              <% categories.forEach((category)=> { %>
+                <% if (category.deleted === false){ %>
+              <option value="<%= category._id %>"><%= category.name %></option>
+              <% } %>
+               
+              <% }) %>
+              
+                
+            </select>
+           
+            <label for="lprice">Enter listing price</label>
+            <input type="text" name="listing_price" id="lp" class="form-control" required>
+            <label for="sprice">Enter selling price</label>
+            <input type="text" name="selling_price" id="sp" class="form-control" required>
+            <label for="scount">Enter stock count</label>
+            <input type="text" name="stock_count" class="form-control" required>
+            <label for="uploadimage">Upload images</label>
+            <!-- <div   class="preview-container bg-white text-dark"  ></div> -->
+            <input type="file" name="images" id="file-input" accept='image/*' class="form-control" multiple required>
+            <div class="previewImages"></div>
+            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  <script>
+$(document).ready(function(){
+  let imgPreview = function(input,imagePlace){
+    if(input.files){
+      let allFiles = input.files.length
+      for(i=0;i<allFiles;i++){
+        let reader = new FileReader()
+        reader.onload = function(event){
+          $($.parseHTML("<img>")).attr("src",event.target.result).appendTo(imagePlace)
+        }
+        reader.readAsDataURL(input.files[i])
+      }
+    }
+  }
+  $("#file-input").on("change",function(){
+      imgPreview(this,"div.previewImages")
+    })
+})
+
+
+function validateForm() {
+  var firstInput = parseFloat(document.getElementById("lp").value)
+  var secondInput = parseFloat(document.getElementById("sp").value)
+  if (firstInput <= secondInput) {
+    alert("Selling price must be less than listing price");
+    return false;
+  }
+  return true;
+}
+
+  </script>
+  
+  <!-- <script>
+    const fileInput = document.querySelector('input[type="file"]');
+    const previewContainer = document.querySelector('.preview-container');
+  
+    fileInput.addEventListener('change', () => {
+      const files = fileInput.files;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileName = file.name;
+        // You can use file.size and file.type to get additional information about the selected files
+        previewContainer.innerHTML += `<div>${fileName}</div>`;
+      }
+    });
+  </script> -->

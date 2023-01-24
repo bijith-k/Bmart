@@ -1,0 +1,191 @@
+<%- include('../partials/user_header') %>
+
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">Cart</h2>
+          <nav class="d-flex align-items-center">
+            <a href="index.html">SHOP &#8594</span></a>
+            <a href="login.ejs">Products</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+  <section id="cart-container" class="container my-5">
+  
+    <table width="100%">
+      <% if(prodList[0] != null) { %>
+      <thead>
+        <tr>
+          <td>IMAGE</td>
+          <td>PRODUCT</td>
+          <td>PRICE</td>
+          <td>QUANTITY</td>
+          <td>TOTAL</td>
+          <td>ACTION</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% prodList[0].products.forEach(product=>{ %>
+          <tr id="<%= product.item._id %>item">
+
+            <td><img src="/uploads/<%= product.item.images[0] %>" alt=""></td>
+            <td>
+              <h6>
+                <%= product.item.name %>
+              </h6>
+            </td>
+            <td>
+              <h6><span>$</span><span>
+                  <%= product.item.selling_price %>
+                </span></h6>
+            </td>
+            <!-- <td><input class="w-25 pl-1" value="1" type="number"></td> -->
+            <td>
+              <button class="cart-item-count"
+                onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',-1)"
+                style="margin-right: 10px; background-color: black; color: white;">-</button>
+              <span id="<%= product.item._id %>">
+                <%= product.quantity %>
+              </span>
+              <button class="cart-item-count"
+                onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',1)"
+                style="margin-left: 10px; background-color: black; color: white;">+</button>
+            </td>
+            <td>
+              <h6><span>$</span><span id="total<%= product.item._id %>">
+                  <%= product.price %>
+                </span></h6>
+            </td>
+            <!-- <td><a href="/remove-product"><i class="fas fa-trash"></i></a></td> -->
+            <td><button id="Remove" class="btn btn-danger"
+                onclick="removeProduct('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>')">Remove</button></td>
+          </tr>
+          <% }) %>
+      </tbody>
+      <% } else { %>
+        <div style="display: flex; justify-content: center;">
+          <h3>No products in cart</h3>  
+          
+        </div>
+      
+      <% } %>
+    </table>
+    
+  </section>
+
+
+  <section id="cart-bottom" class="container my-5">
+   
+    <div class="row  " style="display: flex;
+    justify-content: flex-end;">
+      <!-- <div class="coupon col-lg-6 col-md-6 col-12 mb-4">
+
+        <div>
+          <h5>COUPON</h5>
+          <p>Enter your coupon code if you have one</p>
+          <input type="text" placeholder="Coupon code">
+          <button>APPLY COUPON</button>
+        </div>
+      </div> -->
+      <div class="total col-lg-6 col-md-6 col-12  "   >
+        <% prodList.forEach(product=>{ %>
+        <div>
+          <h5>CART TOTAL</h5>
+          <!-- <div class="d-flex justify-content-between">
+            <h6>Subtotal</h6>
+            <h6><span>$</span><span id="grandTotal<%= prodList[0].user %>"><%= prodList[0].totalprice %></span></h6>
+          </div> -->
+          <!-- <div class="d-flex justify-content-between">
+            <h6>Coupon Discount</h6>
+            <h6><span>$</span><span>0</span></h6>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h6>Shipping</h6>
+            <h6><span>$</span><span>0</span></h6>
+          </div> -->
+          <!-- <hr class="second-hr"> -->
+          <div class="d-flex justify-content-between">
+            <h6>Total</h6>
+            <h6><span>$</span><span id="grandTotal<%= prodList[0]._id %>"><%= prodList[0].totalprice %></span></h6>
+          </div>
+          <button class="ml-auto btn btn-success"><a href="/checkout" class="text-white">PROCEED TO CHECKOUT</a></button>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+   
+  </section>
+
+  <%- include('../partials/user_footer') %>
+
+    <script>
+      function changeQuantity(cartId, proId,userId, count) {
+        let quantity = parseInt(document.getElementById(proId).innerHTML)
+        count = parseInt(count)
+        $.ajax({
+          url: '/change-product-quantity',
+          data: {
+            cart: cartId,
+            product: proId,
+            user:userId,
+            count: count,
+            quantity: quantity
+          },
+          method: 'post',
+          success: (response) => {
+            if (response.removeProduct) {
+              
+              Swal.fire(
+                'Removed!',
+                'Product removed from cart',
+                'warning'
+              )
+              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)-parseInt(response.productTotal)
+              $('#'+proId+'item').remove()
+
+            } else {
+              document.getElementById(proId).innerHTML = quantity + count
+              document.getElementById('total' + proId).innerHTML = parseInt(response.productTotal) * parseInt(response.q)
+              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)
+              // document.getElementById('bill' + userId).innerHTML = parseInt(response.totalPrice)
+
+              
+              // location.reload()
+            }
+          }
+        })
+      }
+
+      function removeProduct(cartId, proId) {
+        $.ajax({
+          url: '/remove-product/'+proId,
+          data: {
+            product: proId,
+            cart: cartId
+          },
+          method: 'post',
+          success: (response) => {
+            if (response.removeProduct) {
+              Swal.fire(
+                'Removed!',
+                'Product removed from cart',
+                'success'
+              ) 
+
+              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)-parseInt(response.productTotal)
+              $('#'+proId+'item').remove()
+              
+              
+            } else {
+              document.getElementById(proId).innerHTML = response.removeProduct
+            }
+          }
+        })
+      }
+
+    </script>
+ 

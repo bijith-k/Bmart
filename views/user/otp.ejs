@@ -1,0 +1,85 @@
+<!--      
+<div class="card mt-5 bg-dark"  style="width: 18rem; margin: 0 auto;">
+  <% if (message) { %>
+    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong><%= message.message %> </strong>
+    </div> 
+    <% } %>
+  <div>
+    <h6 class="text-white py-3">OTP VERIFICATION</h6>
+  </div>
+  <form action="/verify-otp" method="post" >
+    <div class="form-row  pt-5">
+      <div class="offset-1 col-lg-10">
+<input type="text" class="inp" name="otp" placeholder=" Enter otp" required>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="margin-left: -15px;">
+        <button type="submit"   class="inp"  >Submit</button>
+      </div>
+  </form>
+  
+    
+    <a href="/resendotp"  class="btn btn-primary mt-1">Resend OTP</a>
+  </div>
+</div>
+  -->
+
+
+<div class="row">
+  <div class="col-12 col-sm-8 col-md-6 mx-auto p-5">
+    <div class="card border-0 shadow">
+      <% if (message) { %>
+        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+          <strong>
+            <%= message.message %>
+          </strong>
+        </div>
+        <% } %>
+          <div class="card-body">
+            <div>
+              <h6 class="text-dark text-center py-3">OTP VERIFICATION</h6>
+            </div>
+            <div style="display: block; text-align: center;">
+              <form action="/verify-otp" method="post" style="display: inline-block;
+            margin-left: auto;
+            margin-right: auto;">
+                <input type="text" class="inp" name="otp" placeholder=" Enter otp" required>
+                <button type="submit" class="inp mt-2">Submit</button>
+              </form>
+              <div>
+                <p class="text-center mt-4">Resend OTP button will be active in <span id="count"></span>s</p>
+              </div>
+              <button id="btnCounter" class="btn btn-info" style="border: none;" disabled><a href="/resendotp" class="text-dark"> Resend
+                  OTP</a></button>
+            </div>
+            <!-- <button class="btnDisable btn-primary mt-1" id="myBtn" class="btnDisable" disabled onclick="alert('Wait till timer completes!')" style="margin-left: 200px;">Wait till countdown ends for resend otp</button></a> -->
+          </div>
+    </div>
+  </div>
+
+  <script>
+    // Get refreence to span and button
+    var spn = document.getElementById("count");
+    var btn = document.getElementById("btnCounter");
+
+    var count = 60;     // Set count
+    var timer = null;  // For referencing the timer
+
+    (function countDown() {
+      // Display counter and start counting down
+      spn.textContent = count;
+
+      // Run the function again every second if the count is not zero
+      if (count !== 0) {
+        timer = setTimeout(countDown, 1000);
+        count--; // decrease the timer
+      } else {
+        // Enable the button
+        btn.removeAttribute("disabled");
+      }
+    }());
+  </script>

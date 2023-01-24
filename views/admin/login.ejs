@@ -1,0 +1,33 @@
+ 
+  <section class="adlogin py-5 " >
+    <div class="container">
+      <% if (message) { %>
+        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+          <strong><%= message.message %> </strong>
+        </div> 
+        <% } %>
+        <div class="col-lg-6 text-center py-5" style="margin: 0 auto; border-radius: 30px; background-color: rgba(222, 226, 230, 1);">
+          <h2>ADMIN LOGIN</h2>
+          <form action="/admin/admin-login" method="post">
+            <div class="form-row  pt-5">
+              <div class="offset-1 col-lg-10">
+  <input type="email" name="email" class="inp" placeholder=" Enter email" required>
+              </div>
+            </div>
+            <div class="form-row pt-3">
+              <div class="offset-1 col-lg-10">
+  <input type="password" name="password" class="inp" placeholder=" Enter password" required>
+              </div>
+            </div>
+            <div class="form-row pt-4 pb-4">
+              <div class="offset-1 col-lg-10">
+   <button type="submit" class="btn1">LOGIN</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      
+    </div>
+   </section>
+ 

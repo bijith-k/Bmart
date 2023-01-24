@@ -1,0 +1,324 @@
+<%- include('../partials/user_header') %>
+
+	<section class="head bg-dark" style="padding-top: 30px;">
+		<div class="container p-5">
+			<div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h2 style="color: white;">Products</h2>
+					<nav class="d-flex align-items-center">
+						<a href="index.html">Shop &#8594</span></a>
+						<a href=" ">Products Categories</a>
+					</nav>
+				</div>
+			</div>
+	</section>
+
+	<section>
+		<div class="container mt-5">
+			<div class="row g-3">
+				<div class="col-md-3">
+				<form class="d-flex"   role="search">
+					<input class="form-control me-2 mb-2" id="search-box" type="search"   name="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success mb-2" type="submit">Search</button>
+				</form>
+					<section id="searchResults">
+
+					</section>
+					<div class="boxModelA">
+						
+						<h4 class="text-center fw-bold text-white" id="sidebar-title">CATEGORIES</h4>
+					</div>
+					<div class="boxModelC">
+						<h6 class="text-center fw-bold" id="sidebar-title"><a class="text-dark text-capitalize" href="/categories">All products</a></h6>
+					</div>
+					<div class="boxModel"> 
+						<% categories.forEach((category)=>{ %>
+							<% if(category.deleted == false) {%>
+						<div style="padding-bottom: 5px; " id="haaai">
+							<a href="/categories?category=<%= category._id %>"  ><button id="sidebar-title" style="border:none; background-color: transparent;">
+									<h6 class="text-capitalize"><%= category.name %></h6>
+								</button></a>
+						</div>
+						<% } %>
+						<% } ) %>
+						<!-- <div style="padding-bottom: 7px; padding-top: 7px; border-bottom: 1px solid rgba(0, 0, 0, 0.2);">
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<h6><span style="margin-right: 5px;">Gaming Laptops</span><span class="opacity-50">(33)</span></h6>
+								</button></a>
+						</div>
+						<div style="padding-bottom: 7px; padding-top: 14px;">
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<h6><span style="margin-right: 5px;">Gaming Laptops</span><span class="opacity-50">(33)</span></h6>
+								</button></a>
+						</div> -->
+
+
+
+					</div>
+					<!-- <div class="boxModelA">
+						<h4 class="text-center fw-bold" id="sidebar-title">Product Filters</h4>
+					</div> -->
+					<div class="boxModel" style="border: none;">
+
+						<!-- 					 
+						<h6>Color</h6>
+						<form style="padding-bottom: 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.498);">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Black<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">White<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Grey<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Silver<span class="text-muted">(500)</span></label>
+							</div>
+						</form> -->
+
+						<!-- <h6 style="cursor: pointer;">Price</h6>
+						<div style="padding-bottom: 2px;">
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Above $2500</p>
+								</button></a>
+						</div>
+						<div>
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Above $2000</p>
+								</button></a>
+						</div>
+						<div>
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Above $1500</p>
+								</button></a>
+						</div>
+						<div>
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Above $1000</p>
+								</button></a>
+						</div>
+						<div>
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Above $500</p>
+								</button></a>
+						</div>
+						<div>
+							<a href="/user/user-signin"><button style="border:none; background-color: transparent;">
+									<p>Below $500</p>
+								</button></a>
+						</div> -->
+
+						<!-- <form>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Above 100000<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Above 70000<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Above 50000<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Above 30000<span class="text-muted">(500)</span></label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox">
+								<label class="form-check-label">Below 30000<span class="text-muted">(500)</span></label>
+							</div>
+						</form> -->
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="boxModelB"
+						style="box-sizing: border-box; width: 100%; display: flex; justify-content: space-between;">
+						<div class="dropdown">
+							<button class="btn  dropdown-toggle text-white"
+								style="background-color: rgba(255, 255, 255, 0); border-radius: 0; display: inline-block;" type="button"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Show 12
+							</button>
+							<ul class="dropdown-menu " style="background-color: #44007c;">
+								<li><a class="dropdown-item text-white" href="#">Show 12</a></li>
+							</ul>
+
+
+							<button class="btn  dropdown-toggle text-white"
+								style="background-color: rgba(255, 255, 255, 0); border-radius: 0; display: inline-block;" type="button"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Sort by
+							</button>
+							<ul class="dropdown-menu text-white" style="background-color: #44007c;">
+								<li><a class="dropdown-item text-white" href="/categories?sort=name">Name</a></li>
+								<li><a class="dropdown-item text-white" href="/categories?sort=price">Price</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="boxModel">
+						<div class="display-items">
+							<% if(products != ''){ %>
+							<div class="row " style="display: flex; flex-wrap: wrap;   max-width: max-content;">
+								<% products.forEach(product=> { %>
+									<% if(product.deleted==false) {%>
+										<div class="col-lg-4" id="mainlist">
+											<div class="pro-img">
+												<img src="/uploads/<%= product.images[0] %>" style="width: 100%;">
+											</div>
+											<div class="pro-details text-center" style="display: grid; place-items: center;  ">
+												<div style="height: 45px;">
+													<h6>
+														<%= product.name %>
+													</h6>
+												</div>
+												
+												<div class="rating">
+													<span><i class="fa fa-star"></i></span>
+													<span><i class="fa fa-star"></i></span>
+													<span><i class="fa fa-star"></i></span>
+													<span><i class="fa fa-star"></i></span>
+													<span><i class="fa fa-star"></i></span>
+												</div>
+												<p style="font-weight: 600;"><span
+														style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;"><span>$</span>
+														<%= product.listing_price %>
+													</span><span><span>$</span>
+														<%= product.selling_price %>
+													</span></p>
+												<div>
+													<button type="button" class="btn text-white" onclick="wishlist('<%= product._id %>')" style=" background-color: #44007c;"
+														title="Add to wish list"><i class="fa fa-heart"></i> </button>
+
+													<button type="button" onclick="addToCart('<%= product._id %>')" class="btn text-white" style=" background-color: #44007c;"
+														title="Add to cart"><i class="fa fa-shopping-cart"></i></button>
+
+													<a href="/product/<%= product._id %>"><button type="button" class="btn text-white"
+															style=" background-color: #44007c;" title="buy">VIEW</button></a>
+												</div>
+											</div>
+
+										</div>
+										<% } %>
+											<% }) %>
+							</div>
+							<% } else { %>
+								<h1 class="text-center text-dark mt-3">No products found</h1>
+							<% } %>
+						</div>
+
+					</div>
+					<div class="boxModelB"
+						style="box-sizing: border-box; width: 100%; display: flex; justify-content: space-between;">
+						<div class="dropdown">
+							<button class="btn  dropdown-toggle text-white"
+								style="background-color: rgba(255, 255, 255, 0); border-radius: 0; display: inline-block;" type="button"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Show 12
+							</button>
+							<ul class="dropdown-menu" style=" background-color: #44007c;">
+								<li><a class="dropdown-item text-white" href="#">Show 12</a></li>
+							</ul>
+						</div>
+						<div style=" display: flex; justify-content: center;">
+							<nav aria-label="Page navigation example">
+								<ul class="pagination">
+									<li class="page-item">
+										<a class="page-link" href="/categories?page=1" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+											<span class="sr-only">Previous</span>
+										</a>
+									</li>
+									<li class="page-item"><a class="page-link" href="/categories?page=1">1</a></li>
+									<li class="page-item"><a class="page-link" href="/categories?page=2">2</a></li>
+									 
+									<li class="page-item">
+										<a class="page-link" href="/categories?page=2" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+											<span class="sr-only">Next</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+
+						<!-- <div class="wrapper" >
+							<ul class="pagination">
+								<li class="btn"><i class="fas fa-angle-left"></i></li>
+								<li class="numb"><span>1</span></li>
+								<li class="numb active"><span>2</span></li>
+								 
+								<li class="btn"><i class="fas fa-angle-right"></i></li>
+							</ul>
+						</div> -->
+
+					</div>
+				</div>
+			</div>
+	</section>
+
+	<%- include('../partials/user_footer') %>
+ 
+
+
+
+<!-- 	
+<script>
+	const ul = document.querySelector(".pagination");
+let allPages = 3;
+
+function elem(allPages, page){
+    let li = '';
+
+    let beforePages = page - 1;
+    let afterPages = page + 1;
+    let liActive;
+
+    if(page > 1){
+        li += `<li class="btn" onclick="elem(allPages, ${page-1})" ><i class="fas fa-angle-left"></i></li>`;
+    }
+
+    for (let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+
+        if(pageLength > allPages){
+            continue;
+        }
+        if(pageLength == 0){
+            pageLength = pageLength + 1;
+        }
+
+        if(page == pageLength){
+            liActive = 'active';
+        }else{
+            liActive = '';
+        }
+
+        li += `<li class="numb ${liActive}" onclick="elem(allPages, ${pageLength})" ><span>${pageLength}</span></li>`
+    }
+
+    if(page < allPages){
+        li += `<li class="btn" onclick="elem(allPages, ${page+1})" ><i class="fas fa-angle-right"></i></li>`;
+    }
+
+    ul.innerHTML = li;
+}
+elem(allPages,2);
+</script> -->
+
+
+<!-- 
+	<script>
+		function sendData(e){
+			fetch('/getProducts',{
+				method:POST,
+				headers:{'Content-Type':'application/json'},
+				body: JSON.stringify({payload:e.value})
+			})
+		}
+	</script> -->

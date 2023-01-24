@@ -1,0 +1,76 @@
+<%- include('../partials/user_header') %>
+
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">Cart</h2>
+          <nav class="d-flex align-items-center">
+            <a href="index.html">SHOP &#8594</span></a>
+            <a href="login.ejs">Products</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+
+
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-3 my-lg-0 my-md-1">
+        <%- include('../partials/user_sidebar') %>
+      </div>
+      <div class="col-lg-9 my-lg-0 my-1">
+        <div id="main-content" class="bg-light border">
+          <div class="d-flex flex-column">
+            <div class="h5">Hello <%= userInfo.name %>
+            </div>
+            <div>Logged in as: <%= userInfo.email %>
+            </div>
+            <hr style="width: 100%;">
+          </div>
+ 
+          <div class="table-responsive">
+            
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                   
+                  <th scope="col">Ordered On</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Payment Method</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                   
+                </tr>
+              </thead>
+              <tbody>
+                <% orderInfo.forEach((order) => { %>
+                <tr>
+                  <td><%= order.ordered_date.getDate()+ '-'+ (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %></td>
+                  <td><%= order.address.name %> <br> <%= order.address.house %> <br> <%= order.address.city %> <br> <%= order.address.district %> <br> <%= order.address.state %> <br> <%= order.address.post %> <br> <%= order.address.pin  %></td>
+                  <td><%= order.total %></td>
+                  <td><%= order.payment.pay_method  %></td>
+                  <td><%= order.order_status  %></td>
+                  <td><a href="/ordered-items/<%= order._id %>"  ><button type="button" class="btn btn-secondary " style="width: 90px; display: block;">View Products</button></i></a>
+                    <a href="/cancel-order/<%= order._id %>" ><button type="button" class="btn btn-danger mt-2" style="width: 90px;">Cancel Order</button></i></a>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            
+          </div>
+
+         
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <%- include('../partials/user_footer') %>

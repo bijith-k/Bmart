@@ -1,0 +1,65 @@
+<%- include('../partials/user_header') %>
+
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">Cart</h2>
+          <nav class="d-flex align-items-center">
+            <a href="index.html">SHOP &#8594</span></a>
+            <a href="login.ejs">Products</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+
+
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-3 my-lg-0 my-md-1">
+        <%- include('../partials/user_sidebar') %>
+      </div>
+      <div class="col-lg-9 my-lg-0 my-1">
+        <div id="main-content" class="bg-light border">
+          <div class="d-flex flex-column">
+            <div class="h5">Hello <%= userInfo.name %>
+            </div>
+            <div>Logged in as: <%= userInfo.email %>
+            </div>
+            <hr style="width: 100%;">
+          </div>
+
+          <div class="row" id="ordered-items"  >
+             
+            <% orderInfo[0].products.forEach((prod)=> { %>
+              <div class="card m-2 " style="width: 15rem; height: 29rem;">
+                <img class="card-img-top mt-2" src="/uploads/<%= prod.item.images[0]  %>" alt="Pro-img" style="height: 12rem;">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= prod.item.name %>
+                  </h5>
+                  <p class="card-text">Price : $<%= prod.item.selling_price %>
+                  </p>
+                  <p class="card-text">Quantity : <%= prod.quantity %>
+                  </p>
+                  <p class="card-text">Total price : $<%= prod.price %>
+                  </p>
+                </div>
+
+              </div>
+              <% }) %>
+
+           </div>
+
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <%- include('../partials/user_footer') %>

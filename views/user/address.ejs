@@ -1,0 +1,221 @@
+<%- include('../partials/user_header') %>
+
+
+  <div class="modal fade border-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 " id="exampleModalLabel">ADDRESS</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="actionmodel" action="/add-address" method="post">
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example3">Name</label>
+              <input type="text" class="form-control" name="name" id="name" required />
+
+            </div>
+
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example3">House</label>
+              <input type="text" id="house" class="form-control" name="house" required />
+
+            </div>
+
+            <!-- post input -->
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example3">Post</label>
+              <input type="text" class="form-control" id="post" name="post" required />
+
+            </div>
+
+            <!-- pin input -->
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example4">Pin</label>
+              <input type="number" id="pin" class="form-control " name="pin" required />
+            </div>
+
+            <!-- city input -->
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example4">City</label>
+              <input type="text" id="city" class="form-control " name="city" required />
+            </div>
+
+            <!-- district input -->
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example4">District</label>
+              <input type="text" id="district" class="form-control " name="district" required />
+            </div>
+
+            <!-- state input -->
+            <div class="form-outline mb-1">
+              <label class="form-label" for="form3Example4">State</label>
+              <input type="text" id="state" class="form-control " name="state" required />
+            </div>
+
+
+
+            <!-- Submit button -->
+            <div class="d-flex justify-content-center mt-3">
+              <button type="submit" class="btn btn-dark  ">Submit</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">Cart</h2>
+          <nav class="d-flex align-items-center">
+            <a href="index.html">SHOP &#8594</span></a>
+            <a href="login.ejs">Products</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+
+
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-3 my-lg-0 my-md-1">
+        <%- include('../partials/user_sidebar') %>
+      </div>
+      <div class="col-lg-9 my-lg-0 my-1">
+        <div id="main-content" class="bg-light border">
+          <div class="d-flex flex-column">
+            <div class="h5">Hello <%= userInfo.name %>
+            </div>
+            <div>Logged in as: <%= userInfo.email %>
+            </div>
+            <hr style="width: 100%;">
+          </div>
+
+
+
+          <div class="border p-2 mt-2" id="">
+            <div id="addressList">
+
+              <h5 class="text-secondary border-bottom py-2 mb-2">Saved Addresses</h5>
+              <% userInfo.address.forEach((row,index)=>{ %>
+                <a class="text-decoration-none text-dark " data-bs-toggle="modal"
+                  data-bs-target="#accountCreationModal">
+                  <div class="card p-3 bg-light my-2" id="<%= row._id %>item">
+
+                    <div class="d-flex justify-content-between">
+                      <h6>Address <%= index+1 %>
+                      </h6>
+                    </div>
+                    <div class="col-md-6">
+                      <p id="p"><b>
+                          <%= row.name %>
+                        </b><br>
+                        <%=row.house +','+ row.city+','+row.post+','+row.district+','+row.state+','+row.pin %>
+                      </p>
+                    </div>
+                    <a class="text-success   text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                      onclick="editaddress('<%= row._id %>')" href="#"><small><i class="fa fa-pencil-square"></i>
+                        Edit</small>
+                    </a>
+                    <a class="text-danger   text-decoration-none" onclick="deleteaddress('<%= row._id %>')" href="#">
+                      <small><i class="fa-solid fa-trash"></i> Delete</small>
+                    </a>
+                  </div>
+                </a>
+                <% }) %>
+           </div>
+            <div class="bg-dash-dark-2 py-4">
+              <div class="container-fluid d-flex justify-content-center">
+
+                <a href="#"> <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-info" onclick="addaddress()" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Add Address
+                  </button></a>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <%- include('../partials/user_footer') %>
+
+
+    <script>
+      function addaddress() {
+        document.getElementById("actionmodel").reset();
+        document.getElementById("actionmodel").setAttribute('action', '/add-address')
+      }
+
+      function editaddress(id) {
+        $.ajax({
+          url: '/edit-address/' + id,
+          data: { id },
+          method: 'get',
+          dataType: "json",
+          encode: true,
+        }).done(function (data) {
+          console.log(data);
+          $('#actionmodel').attr('action', '/update-address/' + data._id)
+          $('#name').val(data.name)
+          $('#house').val(data.house)
+          $('#post').val(data.post)
+          $('#city').val(data.city)
+          $('#district').val(data.district)
+          $('#state').val(data.state)
+          $('#pin').val(data.pin)
+        })
+
+      }
+
+
+      function deleteaddress(id) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '/delete-address/' + id,
+              data: { id },
+              method: 'get',
+              dataType: "json",
+              encode: true,
+            }).done(function (data) {
+              $('#' + id + 'item').remove()
+              Swal.fire(
+                'removed!',
+                'This Address has been removed.',
+                'success'
+              )
+
+            })
+
+          }
+        })
+      }
+
+    </script>

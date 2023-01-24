@@ -1,0 +1,328 @@
+<%- include('../partials/user_header') %>
+
+    <div class="modal fade border-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 " id="exampleModalLabel">ADDRESS</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="actionmodel" action="/add-order-address" method="post">
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example3">Name</label>
+                            <input type="text" class="form-control" name="name" id="name" required />
+
+                        </div>
+
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example3">House</label>
+                            <input type="text" id="house" class="form-control" name="house" required />
+
+                        </div>
+
+                        <!-- post input -->
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example3">Post</label>
+                            <input type="text" class="form-control" id="post" name="post" required />
+
+                        </div>
+
+                        <!-- pin input -->
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example4">Pin</label>
+                            <input type="number" id="pin" class="form-control " name="pin" required />
+                        </div>
+
+                        <!-- city input -->
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example4">City</label>
+                            <input type="text" id="city" class="form-control " name="city" required />
+                        </div>
+
+                        <!-- district input -->
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example4">District</label>
+                            <input type="text" id="district" class="form-control " name="district" required />
+                        </div>
+
+                        <!-- state input -->
+                        <div class="form-outline mb-1">
+                            <label class="form-label" for="form3Example4">State</label>
+                            <input type="text" id="state" class="form-control " name="state" required />
+                        </div>
+
+                        <!-- Submit button -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn btn-dark  ">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <section class="head bg-dark" style="padding-top: 30px;">
+        <div class="container p-5">
+            <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h2 style="color: white;">Cart</h2>
+                    <nav class="d-flex align-items-center">
+                        <a href="index.html">SHOP &#8594</span></a>
+                        <a href="login.ejs">Products</a>
+                    </nav>
+                </div>
+            </div>
+    </section>
+
+
+    <div class="container">
+        <h2 class="text-center py-4">CHECKOUT</h2>
+        <form action="" id="checkout-form">
+            <div class="row">
+
+                <div class="col-md-4 order-md-2 mb-4 mt-2">
+
+                    <ul class=" list-group mb-3 bg-light" style="border: 1px solid rgba(29, 11, 11, 0.145);">
+                        <li class="list-group-item bg-light d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-2">Total Products</h6>
+                                <% cartInfo.products.forEach(product=>{ %>
+                                    <p class="mt-1 mb-0" style="font-size: 10px;">
+                                        <%= product.item.name %> <span><b> X </b><span>
+                                                    <%= product.quantity %>
+                                                </span><small> = </small><span>$<%= product.price %></span>
+                                    </p>
+                                    <% }) %>
+                            </div>
+                            <span class="text-muted">
+                                <%= cartInfo.products.length %>
+                            </span>
+
+                        </li>
+
+
+                        <li class="list-group-item bg-light d-flex justify-content-between lh-condensed pt-0">
+                            <div>
+                                <h6 class="my-0 ">Sub Total</h6>
+                            </div>
+                            <span class="text-muted">$<%= cartInfo.totalprice %></span>
+                        </li>
+                        <li class="list-group-item bg-light d-flex justify-content-between lh-condensed pt-0">
+                            <div class="text-success">
+                                <h6 class="my-0">Coupon Discount</h6>
+                                <small class="displayCode"></small>
+                            </div>
+                            <span class="text-success">-$<span id="discount">0</span></span>
+                        </li>
+                        <li class="list-group-item bg-light d-flex justify-content-between pt-0">
+                            <span>Total (USD)</span>
+                            <strong>$<span id="total">
+                                    <%= cartInfo.totalprice %>
+                                </span></strong>
+                        </li>
+                    </ul>
+                    <input type="text" name="userId" value="<%= cartInfo.user %>" hidden>
+                    <form class="card p-2 mt-3">
+                        <p>Do you have any coupon codes?</p>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control bg-light" id="coupon-code" placeholder="Coupon Code">
+                            <div class="input-group-append">
+                                <button class="btn text-white" style=" background-color: #44007c"
+                                    id="apply-coupon">Redeem</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="myDiv" style="display: none;">
+
+                        <h6 class="text-danger">Coupon applied,do you need to remove the coupon?</h6>
+                        <a href=""> <button id="removeCoupon" class="btn btn-sm btn-danger">Remove coupon</button></a>
+
+                    </div>
+
+                    <!-- for getting entered coupon code -->
+                    <!-- <input type="hidden" name="couponData" id="couponData"> -->
+
+                    <div class="p-3  my-3 bg-light" style="border: 1px solid rgba(29, 11, 11, 0.145);">
+                        <span><input type="radio" id="html" name="payment-method" value="COD" required>
+                            <label for="html">Cash On Delivery</label></span><br>
+                        <span><input type="radio" id="css" name="payment-method" value="ONLINE" required>
+                            <label for="css">Online Payment</label></span>
+                    </div>
+
+
+                    <button class="btn w-100 text-white" style=" background-color: #44007c" type="submit">PLACE
+                        ORDER</button>
+                </div>
+
+
+                <div class="col-md-8 order-md-10 mb-8  mt-2" id="">
+                    <div class="card mb-4  bg-light">
+
+
+                        <div id="addressList">
+
+                            <h5 class="text-secondary border-bottom py-2 px-2 mb-2">Select delivery address</h5>
+
+                            <% userInfo.address.forEach((row,index)=>{ %>
+                                <div class="card p-3 bg-light my-2 mx-3" id=" item">
+                                    <div class="d-flex justify-content-between">
+                                        <span><input class="checkout_input_checkbox" type="radio" name="order-address"
+                                                required value="<%= index %>">
+                                            <h6>Address <%= index+1 %>
+                                            </h6>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <p id="p"><b>
+                                                <%= row.name %>
+                                            </b><br>
+                                            <%=row.house +','+
+                                                row.city+','+row.post+','+row.district+','+row.state+','+row.pin %>
+
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <% }) %>
+
+
+                        </div>
+                        <div class="bg-dash-dark-2 py-4">
+                            <div class="container-fluid">
+
+                                <a href="#"> <!-- Button trigger modal -->
+
+                                    <button type="button" class="btn text-white" style=" background-color: #44007c"
+                                        onclick="addaddress()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        Add new address
+                                    </button></a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+    </div>
+
+
+
+
+
+    <%- include('../partials/user_footer') %>
+
+        <script>
+            function addaddress() {
+                document.getElementById("actionmodel").reset();
+                document.getElementById("actionmodel").setAttribute('action', '/add-order-address')
+            }
+
+
+
+            $(document).ready(function () {
+                var currentValue = localStorage.getItem('newTotal');
+                $('#total').val(currentValue)
+            })
+
+            $("#apply-coupon").click(function () {
+                var couponCode = $("#coupon-code").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/apply-coupon",
+                    data: { code: couponCode },
+                    success: function (response) {
+                        if (response.success) {
+                            // Apply the discount to the total
+                            var newTotal = response.newTotal;
+                            var discount = response.discount
+                            $("#total").text(newTotal);
+                            // document.getElementById(total).innerHTML = newTotal
+                            // document.getElementById(discount).innerHTML = discount
+                            $("#discount").text(discount);
+                            alert("Coupon applied! New total: " + newTotal);
+                            $("#myDiv").show();
+
+                        } else if (response.notapplicable) {
+                            alert("Can't apply the coupon");
+                        } else if (response.expired) {
+                            alert("Coupon expired");
+                        }
+                        else {
+                            alert("Invalid coupon code or you have already applied this coupon");
+                        }
+                    }
+                });
+            });
+
+            // const couponForm = document.querySelector("#coupon-code")
+            //                 const couponData = document.querySelector('#couponData')
+            //                 couponForm.addEventListener("input", (event) => {
+            //                     console.log("fjfhsakdljafhdsljkfhdsjkf");
+            //                     couponData.value = couponForm.value
+            //                 })
+
+            // coupon removing
+            var button1 = document.getElementById("removeCoupon");
+            button1.addEventListener("click", function (event) {
+                event.preventDefault();
+                var couponCode = $("#coupon-code").val();
+                 
+                $.ajax({
+                    type: "POST",
+                    url: "/remove-coupon",
+                    data: { code: couponCode },
+                    success: function (response) {
+                        if (response.success) {
+                            // Apply the discount to the total
+                            var newTotal = response.newTotal;
+                            var discount = response.discount
+                            $("#total").text(newTotal);
+                            // document.getElementById(total).innerHTML = newTotal
+                            // document.getElementById(discount).innerHTML = discount
+                            $("#discount").text(discount);
+                            alert("Coupon Removed ");
+                            $("#myDiv").hide();
+                            document.getElementById("coupon-code").value = "";
+                        }
+                        else {
+                            alert("Error while removing applied coupon");
+                        }
+                    }
+                });
+
+            });
+
+
+
+
+
+
+
+
+        </script>
+
+        <script>
+            $("#checkout-form").submit((e) => {
+                e.preventDefault()
+                $.ajax({
+                    url: '/place-order',
+                    method: 'post',
+                    data: $('#checkout-form').serialize(),
+                    success: (response) => {
+                        alert(response)
+                        if (response.status) {
+                            location.href = '/order-success'
+                        }
+                    }
+                })
+            })
+        </script>

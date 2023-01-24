@@ -1,0 +1,43 @@
+<%- include('../partials/admin_headside') %>
+
+  <section>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-6  mx-4">
+          <form action="/admin/add-banner" method="post" enctype="multipart/form-data">
+            <label for="name">Enter banner name</label>
+            <input type="text" name="name" class="form-control" required>
+            <label for="name">Enter Description</label>
+            <input type="text" name="description" class="form-control" required>
+            <label for="name">Add image</label>
+            <input type="file" name="image" accept="image/*" id="banner-img" class="form-control" required>
+            <div class="previewImages"></div>
+            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    $(document).ready(function(){
+      let imgPreview = function(input,imagePlace){
+        if(input.files){
+          let allFiles = input.files.length
+          for(i=0;i<allFiles;i++){
+            let reader = new FileReader()
+            reader.onload = function(event){
+              $($.parseHTML("<img>")).attr("src",event.target.result).appendTo(imagePlace)
+            }
+            reader.readAsDataURL(input.files[i])
+          }
+        }
+      }
+      $("#banner-img").on("change",function(){
+          imgPreview(this,"div.previewImages")
+        })
+    })
+    
+      </script>
+  

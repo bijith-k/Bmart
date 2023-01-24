@@ -1,0 +1,105 @@
+<%- include('../partials/user_header') %>
+
+<section class="head bg-dark" style="padding-top: 30px;">
+	<div class="container p-5">
+		<div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+			<div class="col-first">
+				<h2 style="color: white;">Wishlist</h2>
+				<nav class="d-flex align-items-center">
+					<a href="index.html" >SHOP &#8594</span></a>
+					<a href="login.ejs" >Products</a>
+				</nav>
+		</div>
+	</div>
+</section>
+
+
+<section id="cart-container" class="container my-5">
+  <table width="100%" >
+  <thead>
+    <tr>
+      
+      <td>IMAGE</td>
+      <td>PRODUCT</td>
+      <td>PRICE</td>
+      <td>ACTIONS</td>
+       
+    </tr>
+  </thead>
+  
+  <tbody>
+    <% proWish[0].products.forEach(product=>{ %>
+    <tr id="<%= product.item._id %>item">
+     
+      <td><img src="/uploads/<%= product.item.images[0] %>"  alt=""></td>
+      <td>
+        <h6><%= product.item.name %></h6>
+      </td>
+      <td><h6><span>$</span><span><%= product.item.selling_price %></span></h6></td>
+      <td><button type="button" class="btn btn-success" onclick="addToCart('<%= product.item._id %>')" style="width: 65%; margin-top: 5px;"
+        title="Add to cart"><h6>Add to cart</h6></button>
+
+        <button type="button" class="btn btn-danger" onclick="removeProduct('<%= proWish[0]._id%>','<%=product.item._id %>')" style="width: 65%; margin-top: 5px; margin-bottom: 5px;"
+          title="remove"><h6> Remove </h6></button>
+      </td>
+     
+    </tr>
+    
+    <% }) %>
+  </tbody>
+  </table>
+  </section>
+
+
+<%- include('../partials/user_footer') %>
+
+ <script>
+  function addToCart(proId){
+  $.ajax({
+    url:'/add-to-cart/'+proId,
+    method:'get',
+    success:(response)=>{
+       if(response.status){
+        Swal.fire(
+          'Added!',
+          'Product added to cart',
+          'success'
+        )
+       }else{
+        Swal.fire({
+          icon: 'error',
+  title: 'Oops...',
+  text: 'You need to login',
+  footer: '<a href="/user-signin">Click here to Login</a>'}
+        ) 
+       }
+       
+    }
+  })
+}
+
+
+function removeProduct(wishlistId, proId) {
+        $.ajax({
+          url: '/remove-wishlist-product/'+proId,
+          data: {
+            product: proId,
+            wishlist: wishlistId
+          },
+          method: 'post',
+          success: (response) => {
+            if (response.removeProduct) {
+              Swal.fire(
+                'Removed!',
+                'Product removed from wishlist',
+                'success'
+              ) 
+              $('#'+proId+'item').remove()
+            } else {
+              document.getElementById(proId).innerHTML = response.removeProduct
+            }
+          }
+        })
+      }
+
+ </script>

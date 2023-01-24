@@ -1,0 +1,74 @@
+<%- include('../partials/admin_headside') %>
+
+<section>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6  mx-4">
+        <form action="/admin/edit-product/<%= product._id %>" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
+          <label for="name">Enter product name</label>
+          <input type="text" name="name" value="<%= product.name %>" class="form-control" required>
+          <label for="description">Enter product description</label>
+          <input type="text" name="description" value="<%= product.description %>" class="form-control" required>
+          <label for="category" style="display: block;">Enter category</label>
+             
+            <select name="category" class="text-capitalize" id="catform" style="display: block; width:100%; border: none;">
+              
+              <option value="<%= product.category._id %>" class="text-capitalize"><%= product.category.name %></option>
+              <% categories.forEach((category)=> { %>
+                <% if (category.deleted === false){ %>
+              <option value="<%= category._id %>" class="text-capitalize"><%= category.name %></option>
+              <% } %>
+               
+              <% }) %>
+            </select>
+           
+          <label for="lprice">Enter listing price</label>
+          <input type="text" name="listing_price" id="lp" value="<%= product.listing_price %>"  class="form-control" required>
+          <label for="sprice">Enter selling price</label>
+          <input type="text" name="selling_price" id="sp" value="<%= product.selling_price %>"  class="form-control" required>
+          <label for="scount">Enter stock count</label>
+          <input type="text" name="stock_count" value="<%= product.stock_count %>"  class="form-control" required>
+          <label for="uploadimage">Upload images</label>
+          <input type="file" name="images" id="file-input" class=" form-control" accept= 'image/*' multiple>
+          <% for (let i=0; i< product.images.length;i++){ %>
+          <img src="/uploads/<%= product.images[i] %>" width="100" class="img-thumbnail mt-1">
+          <% } %>
+          <div class="previewImages"></div>
+          <button type="submit" class="btn btn-primary mt-4" style="display:block;">Update Product</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  $(document).ready(function(){
+    let imgPreview = function(input,imagePlace){
+      if(input.files){
+        let allFiles = input.files.length
+        for(i=0;i<allFiles;i++){
+          let reader = new FileReader()
+          reader.onload = function(event){
+            $($.parseHTML("<img>")).attr("src",event.target.result).appendTo(imagePlace)
+          }
+          reader.readAsDataURL(input.files[i])
+        }
+      }
+    }
+    $("#file-input").on("change",function(){
+        imgPreview(this,"div.previewImages")
+      })
+  })
+  
+  function validateForm() {
+  var firstInput = parseFloat(document.getElementById("lp").value)
+  var secondInput = parseFloat(document.getElementById("sp").value)
+  if (firstInput <= secondInput) {
+    alert("Selling price must be less than listing price");
+    return false;
+  }
+  return true;
+}
+  
+
+    </script>

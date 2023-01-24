@@ -1,0 +1,74 @@
+
+
+<%- include('../partials/admin_headside') %>
+<section>
+  <div class="container">
+   <a href="/admin/add-coupon"><button type="button" class="btn btn-primary  my-3" style="float: right;">Add Coupon</button></a> 
+  </div>
+  
+</section>
+<section>
+  <% if (message) { %>
+    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong><%= message.message %> </strong>
+    </div> 
+    <% } %>
+  <div class="container">
+    <table class="table table-success table-striped" id="userTable">
+      <% if(coupons !='') {%>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Code</th>
+            <th scope="col">Min bill($)</th>
+            <th scope="col">Cap amount($)</th>
+            <th scope="col">Discount(%)</th>
+            <th scope="col">Expire</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+          <% coupons.forEach((row,index) => { %>
+            <tr class="align-middle">
+              <th scope="row"><%=index+1 %></th>
+              <td><%= row.name %></td>
+              <td><%= row.code %></td>
+              <td><%= row.min_bill %></td>
+              <td><%= row.cap %></td>
+              <td><%= row.discount %></td>
+              <!-- <td ><%= row.expire %></td> -->
+              <td><%= row.expire.getDate()+ "-" +(row.expire.getMonth()+1) + "-" +row.expire.getFullYear() %></td>
+              <!-- <td><%= row.status %></td> -->
+              <td>
+                <%
+                  var expiryDate = new Date(row.expire);
+                  var currentDate = new Date();
+                  if (expiryDate > currentDate) {
+                    %>
+                    <span class="active " >Active</span>
+                    <%
+                  } else {
+                    %>
+                    <span class="expired text-danger">Expired</span>
+                    <%
+                  }
+                %>
+              </td>
+              <td>
+                <a href="/admin/edit-coupon/<%= row._id %>" class="text-success"><button type="button" class="btn btn-info" style="width: 70px;">Edit</button></a><br>
+                <a href="/admin/delete-coupon/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-danger" style="width: 70px; margin-top: 5px;">Delete</button></a>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+        <% } else { %>
+          <h1 class="text-center text-secondary mt-5">No coupons are there</h1>
+        <% } %>
+    </table>
+  </div>
+</section>
+

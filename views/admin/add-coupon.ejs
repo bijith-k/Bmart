@@ -1,0 +1,32 @@
+<%- include('../partials/admin_headside') %>
+
+  <section>
+    <div class="container mt-4">
+      <% if (message) { %>
+        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+          <strong><%= message.message %> </strong>
+        </div> 
+        <% } %>
+      <div class="row">
+        <div class="col-md-6  mx-4">
+          <form action="/admin/add-coupon" method="post"  enctype="application/x-www-form-urlencoded">
+            <label for="name">Enter Coupon name</label>
+            <input type="text" name="name" class="form-control" required>
+            <label for="name">Enter Coupon code</label>
+            <input type="text" name="code" class="form-control" required>
+            <label for="name">Minimum bill amount</label>
+            <input type="number" name="bill" class="form-control" required>
+            <label for="name">Cap amount</label>
+            <input type="number" name="cap" class="form-control" required>
+            <label for="name">Discount(%)</label>
+            <input type="number" name="discount" class="form-control" required>
+            <label for="name">Expiry date</label>
+            <input type="date" name="date" class="form-control" required>
+            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+

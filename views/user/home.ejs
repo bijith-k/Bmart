@@ -1,0 +1,283 @@
+ 
+ 
+
+<%- include('../partials/user_header') %>
+
+
+  <section class="head bg-dark" id="tophead" style=" padding-top: 3rem;  padding-bottom: 10px;">
+    <div class="container">
+      <% if (message) { %>
+        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+          <strong>
+            <%= message.message %>
+          </strong>
+        </div>
+        <% } %>
+       
+          <div class="row">
+            <% banners.forEach((row,index) => { %>
+              <% if(row.deleted == false){ %>
+            <div class="col-lg-6">
+              <h1 class="py-5" style=" color: rgb(255, 255, 255);"> <%= row.name %>
+              </h1>
+              <p class="py-3" style="color: rgba(139, 142, 153, 1); font-size: medium;"><%= row.description %></p>
+              <button class="btn btn-light  mb-3"  ><a href="/categories" class="text-dark" >SHOP NOW</a></button>
+            </div>
+            <div class="col-lg-6">
+              <img src="/uploads/<%= row.image %>" class="img-fluid" alt="homeimg">
+            </div>
+            <% } %>
+            <% }) %>
+          </div>
+    </div>
+  </section>
+
+
+<section>
+<div class="container-fluid my-5">
+  <div class="row" id="cathome" style="display: flex; justify-content: center;">
+    <% categories.forEach((row,index) => { %>
+      <% if(row.deleted == false){ %>
+    <div class="col-md-4 my-5" id="maincat"  >
+      <div>
+        <h4 class="text-center fw-bold pt-5 text-capitalize"> <%= row.name %></h4>
+        <p class="text-center fw-normal"><%= row.description %></p>
+      </div>
+    
+      <img src="/uploads/<%= row.image %>" width="100%">
+      
+    </div>
+    <% } %>
+    <% }) %>
+    <!-- <div class="col-md-4 my-5" id="maincat" >
+      <div >
+        <h4 class="text-center fw-bold pt-5">PERFORMANCE LAPTOPS</h4>
+        <p class="text-center fw-normal">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc</p>
+      </div>
+      <img src="images/gaming-fococlipping-standard.png" width="100%">
+    </div>
+    <div class="col-md-4 my-5" id="maincat"  >
+      <div>
+        <h4 class="text-center fw-bold pt-5">BROWSING LAPTOPS</h4>
+        <p class="text-center fw-normal">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc</p>
+      </div>
+      <img src="images/gaming-fococlipping-standard.png" width="100%">
+    </div> -->
+  </div>
+</div>
+
+</section>
+
+
+  <!-- <section>
+    <div class="container my-5">
+      
+      <div class="row " style="display: flex; flex-wrap: wrap;   max-width: max-content;">
+        <h1 class="text-center">LATEST PRODUCTS</h1>
+        <div class="col-lg-3" id="mainlist">
+          <div class="pro-img">
+           <a href="/categories"> <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;"></a>
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3" id="mainlist">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="pro-img">
+            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
+          </div>
+          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
+            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+             <div class="rating">
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                  <span><i class="fa fa-star" ></i></span> 
+                 </div>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+          </div>
+        </div>
+        
+
+        
+      </div>
+    </div>
+  </section> -->
+
+ 
+
+
+<!-- 
+  <section id="featured" class="my-5 pb-5">
+    <div class="container text-center mt-5 py-5">
+      <h3>Latest</h3>
+      <hr class="mx-auto">
+      <p>dfjsdjkfs fiuerwehrwkek osdfjdfakldsjfhsdlkfhw sfhfaiuiiwerhrhfkjsd</p>
+    </div>
+    <div class="row mx-auto container">
+      <div class="prs text-center col-lg-3 col-md-4 col-12">
+        <img class="img-fluid mb-3" src="images/g1_1_asus-tuf-f15-fx506lhb.jpg">
+        <div class="star">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <h5 class="p-name">Sport bots</h5>
+        <h4 class="p-price">$55.99</h4>
+        <button class="buy-buy">buy now</button>
+      </div>
+      <div class="prs text-center col-lg-3 col-md-4 col-12">
+        <img class="img-fluid mb-3" src="images/g1_1_asus-tuf-f15-fx506lhb.jpg">
+        <div class="star">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <h5 class="p-name">Sport bots</h5>
+        <h4 class="p-price">$55.99</h4>
+        <button class="buy-buy">buy now</button>
+      </div>
+      <div class="prs text-center col-lg-3 col-md-4 col-12">
+        <img class="img-fluid mb-3" src="images/g1_1_asus-tuf-f15-fx506lhb.jpg">
+        <div class="star">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <h5 class="p-name">Sport bots</h5>
+        <h4 class="p-price">$55.99</h4>
+        <button class="buy-buy">buy now</button>
+      </div>
+      <div class="prs text-center col-lg-3 col-md-4 col-12">
+        <img class="img-fluid mb-3" src="images/g1_1_asus-tuf-f15-fx506lhb.jpg">
+        <div class="star">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <h5 class="p-name">Sport bots</h5>
+        <h4 class="p-price">$55.99</h4>
+        <button class="buy-buy">buy now</button>
+      </div>
+    </div>
+
+  </section> -->
+
+
+  <%- include('../partials/user_footer') %>
+
+ 

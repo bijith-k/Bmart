@@ -1,0 +1,61 @@
+
+<!-- 
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+					<h2 style="color: white;">Login here</h2>
+					<nav class="d-flex align-items-center">
+						<a href="index.html" >Account &#8594</span></a>
+						<a href="login.ejs" >Login</a>
+					</nav>
+      </div>
+    </div>
+  </section> -->
+
+	<!--================Login Box Area =================-->
+	<section class="login py-5 bg-light">
+    <div class="container">
+      <% if (message) { %>
+        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+          <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+          <strong><%= message.message %> </strong>
+        </div> 
+        <% } %>
+      <div class="row g-0" id="reg-row">
+        <div class="reg-image col-lg-6">
+          <img src="images/register page image11.jpg" class="img-fluid" alt="register_background">
+          <div class="centered">
+            <h2>NEW MEMBER?</h2>
+            <h2>THEN</h2>
+           <a href="/user-registration"><button class="btn2">CREATE AN ACCOUNT</button></a>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center py-5">
+          <h2>LOGIN TO ENTER</h2>
+  
+          <form action="/user-signin" method="post" >
+            <div class="form-row  pt-5">
+              <div class="offset-1 col-lg-10" id="inputElements">
+  <input type="email" class="inp" name="email" placeholder=" Enter email" required>
+              </div>
+            </div>
+            <div class="form-row pt-3">
+              <div class="offset-1 col-lg-10" id="inputElements">
+  <input type="password" class="inp" name="password" placeholder=" Enter password" required>
+              </div>
+            </div>
+            <div class="form-row pt-4 pb-4">
+              <div class="offset-1 col-lg-10">
+                
+             <button class="btn1">LOGIN</button>
+              </div>
+            </div>
+          </form>
+          <p  class="pt-3"><a href="/forgot-password">Forgot password?</a></p>
+        </div>
+      </div>
+    </div>
+   </section>
+  
+  

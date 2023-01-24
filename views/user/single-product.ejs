@@ -1,0 +1,85 @@
+<%- include('../partials/user_header') %>
+  <section class="head bg-dark" style="padding-top: 80px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">Product Details</h2>
+          <nav class="d-flex align-items-center">
+            <a href="index.html">Shop &#8594</span></a>
+            <a href="login.ejs">Product details</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+  <section class="container sproduct my-3 pt-3">
+    <div class="row mt-3">
+      <div class="col-lg-5 col-md-12 col-12">
+        <div class="product-img">
+          <img class="img-fluid w-100 pb-1" id="proimg" class="big-img" src="/uploads/<%= product.images[0] %>">
+          <div class="magnifier-lens">
+
+          </div>
+        </div>
+
+        <div class="small-img-group mt-3">
+          <div class="small-img-col">
+            <img src="/uploads/<%= product.images[0] %>" style="width: 100%; " class="small-img">
+          </div>
+          <div class="small-img-col">
+            <img src="/uploads/<%= product.images[1] %>" style="width: 100%; " class="small-img">
+          </div>
+          <div class="small-img-col">
+            <img src="/uploads/<%= product.images[2] %>" style="width: 100%;  " class="small-img">
+          </div>
+          <div class="small-img-col">
+            <img src="/uploads/<%= product.images[3] %>" style="width: 100%; " class="small-img">
+          </div>
+        </div>
+      </div>
+      <div class="product-details col-lg-6 col-md-12 col-12">
+        <h3 class="mb-5 mt-3"><%= product.name %></h3>
+            
+        <h5 class="mb-4 mt-2 text-capitalize">Category : <%= product.category.name %></h5>
+               
+        <span><%= product.description %></span>
+
+        <h2 class="my-3" style="font-weight: 600;"><span
+          style="margin-right: 15px;"  ><span>$</span><%= product.selling_price %></span><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 15px;"><span>$</span><%= product.listing_price %></span>
+        </h2>
+        <!-- <input type="number" value="1"> -->
+        <button class="cartButton btn btn-dark"  onclick="addToCart('<%= product._id %>')">Add to cart<span style="margin-left: 5px;"><i class="fa-solid fa-cart-shopping"></i></span></button>
+        <button class="wishlistButton btn btn-danger" onclick="wishlist('<%= product._id %>')">Add to wishlist<span style="margin-left: 5px;"><i class="fa-solid fa-heart"></i></span></button>
+        <!-- <button class="buyButton btn btn-success">Buy now<span style="margin-left: 5px;"><i class="fa-sharp fa-solid fa-bag-shopping"></i></span></button> -->
+        <div class="magnified-img">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <%- include('../partials/user_footer') %>
+
+    <script>
+
+      var mainImg = document.getElementById('proimg')
+      var smallImg = document.getElementsByClassName('small-img')
+      smallImg[0].onclick = function () {
+        mainImg.src = smallImg[0].src
+      }
+      smallImg[1].onclick = function () {
+        mainImg.src = smallImg[1].src
+      }
+      smallImg[2].onclick = function () {
+        mainImg.src = smallImg[2].src
+      }
+      smallImg[3].onclick = function () {
+        mainImg.src = smallImg[3].src
+      }
+
+    </script>
+
+    <script src="/javascripts/script.js"></script>
+    <script src="/javascripts/scriptAjax.js"></script>

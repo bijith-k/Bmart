@@ -1,0 +1,54 @@
+<%- include('../partials/admin_headside') %>
+<section>
+  <!-- <div class="container">
+   <a href="/admin/add_user"><button type="button" class="btn btn-primary  my-3" style="float: right;">Add User</button></a> 
+  </div> -->
+  
+</section>
+<section>
+  <div class="container">
+    <% if (message) { %>
+      <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong><%= message.message %> </strong>
+      </div> 
+      <% } %>
+    <table class="table table-success table-striped my-2" id="userTable">
+      <% if(users !='') {%>
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+           <% users.forEach((row,index) => { %>
+          <tr class="align-middle">
+            <th scope="row"><%= index+1 %></th>
+            <td><%= row.name %></td>
+            <td><%= row.email %></td>
+            <td><%= row.phone %></td>
+            <td><%= row.status %></td>
+            <td>
+              <% if(row.status=='unblocked') {%>
+              <a href="/admin/block-user/<%=row._id %>"  class="btn btn-danger" style="width: 5rem;">Block</a>
+              <%} else { %>
+                <a href="/admin/unblock-user/<%=row._id %>"  class="btn btn-success" style="width: 5rem;">Unblock</a>
+                <% } %>
+              <!-- <a href="/admin/edit_user/<%= row._id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a> -->
+              <!-- <a href="/admin/delete-user/<%= row._id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
+            </td>
+             
+          </tr>
+          <% }) %>
+        </tbody>
+        <% } else { %>
+<h1 class="text-center text-secondary mt-5">No users found in the database</h1>
+          <% } %>
+    </table>
+  </div>
+</section>

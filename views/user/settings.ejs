@@ -1,0 +1,77 @@
+<%- include('../partials/user_header') %>
+
+
+  
+  <section class="head bg-dark" style="padding-top: 30px;">
+    <div class="container p-5">
+      <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h2 style="color: white;">My Account</h2>
+          <nav class="d-flex align-items-center">
+            <a href="/">Home &#8594</span></a>
+            <a href="/account">My Account</a>
+          </nav>
+        </div>
+      </div>
+  </section>
+
+
+
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-3 my-lg-0 my-md-1">
+        <%- include('../partials/user_sidebar') %>
+      </div>
+      <div class="col-lg-9 my-lg-0 my-1">
+        <div id="main-content" class="bg-light border">
+          <div class="d-flex flex-column">
+            <div class="h5">Hello <%= userInfo.name %></div>
+            <div>Logged in as: <%= userInfo.email %></div>
+            <hr style="width: 100%;">
+          </div>
+
+
+
+          <div class="border p-2 mt-2" id="">
+            <div id="addressList">
+              <% if (message) { %>
+                <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+                  <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                  <strong><%= message.message %> </strong>
+                </div> 
+                <% } %>
+              <h5 class="text-secondary border-bottom py-2 mb-2">Change Password</h5>
+              
+            </div>
+            
+            <form action="/change-password" method="post" onsubmit="return validatePassword()" enctype= "application/x-www-form-urlencoded">
+              <label for="pass">Enter new password</label>
+              <input type="password" name="password"  class="form-control" required pattern=".{8,}" required>
+              <label for="pass">Confirm entered password</label>
+              <input type="password" name="confirmPass"   class="form-control" required>
+              <button type="submit" class="btn btn-primary mt-4" style="display: block;">Reset Password</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+    
+
+  <%- include('../partials/user_footer') %>
+
+
+  <script>
+    function validatePassword() {
+        var password = document.getElementsByName("password")[0].value;
+        var confirmPassword = document.getElementsByName("confirmPass")[0].value;
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return false;
+        }
+        return true;
+    }
+</script>

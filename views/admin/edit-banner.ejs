@@ -1,0 +1,44 @@
+<%- include('../partials/admin_headside') %>
+
+<section>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6  mx-4">
+        <form action="/admin/edit-banner/<%= banners._id %>" method="post" enctype= "multipart/form-data">
+          <label for="name">Enter Banner name</label>
+          <input type="text" name="name" value="<%= banners.name %>" class="form-control" required>
+          <label for="name">Enter Description</label>
+          <input type="text" name="description" value="<%= banners.description %>" class="form-control" required>
+          <label for="image">Upload image</label>
+          <input type="file" name="image" accept="image/*" id="banner-edit" class="form-control">
+          <img src="/uploads/<%= banners.image %>" width="100" class="img-thumbnail mt-1">
+          <input type="hidden" name="old_img" value="<%= banners.image  %>">
+          <div class="previewImages"></div>
+          <button type="submit" class="btn btn-primary mt-4" style="display: block;">Update Banner</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  $(document).ready(function(){
+    let imgPreview = function(input,imagePlace){
+      if(input.files){
+        let allFiles = input.files.length
+        for(i=0;i<allFiles;i++){
+          let reader = new FileReader()
+          reader.onload = function(event){
+            $($.parseHTML("<img>")).attr("src",event.target.result).appendTo(imagePlace)
+          }
+          reader.readAsDataURL(input.files[i])
+        }
+      }
+    }
+    $("#banner-edit").on("change",function(){
+        imgPreview(this,"div.previewImages")
+      })
+  })
+  
+    </script>

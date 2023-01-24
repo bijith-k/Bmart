@@ -1,0 +1,54 @@
+<%- include('../partials/admin_headside') %>
+<section>
+  <div class="container">
+   <a href="/admin/add-category"><button type="button" class="btn btn-primary  my-3" style="float: right;">Add Category</button></a> 
+  </div>
+  
+</section>
+<section>
+  <% if (message) { %>
+    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong><%= message.message %> </strong>
+    </div> 
+    <% } %>
+  <div class="container">
+    <table class="table table-success table-striped" id="userTable">
+      <% if(categories !='') {%>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Action</th>
+             
+          </tr>
+        </thead>
+        <tbody>
+         
+          <% categories.forEach((row,index) => { %>
+            <tr class="align-middle">
+              <th scope="row"><%=index+1 %></th>
+              <td><img style="height: 50px; width: 50px;" class="img-thumbnail" src="/uploads/<%= row.image %>" ></td>
+              <td class="text-capitalize"><%= row.name %></td>
+              <td><%= row.description %></td>
+              <td>
+                <a href="/admin/edit-category/<%= row._id %>" class="text-success"><button type="button" class="btn btn-info" style="width: 70px;">Edit</button></a>
+                <% if(row.deleted == true) {%>
+                <a href="/admin/list-category/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-secondary" style="width: 70px;">List</button></a>
+                <%} else { %>
+                <a href="/admin/unlist-category/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-danger" style="width: 70px;">Unlist</button></a>
+                <% } %>
+                <!-- <a href="/admin/delete-category/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-warning">Unlist</button></a> -->
+              </td>
+               
+            </tr>
+            <% }) %>
+        </tbody>
+        <% } else { %>
+          <h1 class="text-center text-secondary mt-5">No categories found in the database</h1>
+        <% } %>
+    </table>
+  </div>
+</section>

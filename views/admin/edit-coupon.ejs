@@ -1,0 +1,27 @@
+<%- include('../partials/admin_headside') %>
+
+<section>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6  mx-4">
+        <form action="/admin/edit-coupon/<%= coupons._id %>" method="post" enctype= " application/x-www-form-urlencoded">
+          <label for="name">Enter Coupon name</label>
+          <input type="text" name="name" value="<%= coupons.name %>" class="form-control" required>
+          <label for="name">Enter Code</label>
+          <input type="text" name="code" value="<%= coupons.code %>" class="form-control" required>
+          <label for="name">Enter minimum bill amount($)</label>
+          <input type="number" name="bill" value="<%= coupons.min_bill %>" class="form-control" required>
+          <label for="name">Cap amount</label>
+          <input type="number" name="cap" value="<%= coupons.cap %>" class="form-control" required>
+          <label for="name">Enter discount(%)</label>
+          <input type="number" name="discount" value="<%= coupons.discount %>" class="form-control" required>
+          <label for="name">Enter expire date</label>
+          <input type="date" name="date" value="<%= coupons.expire %>" class="form-control" required>
+           
+          <button type="submit" class="btn btn-primary mt-4" style="display: block;">Update Coupon</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+

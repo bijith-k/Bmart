@@ -1,0 +1,64 @@
+<%- include('../partials/admin_headside') %>
+<section>
+  <div class="container">
+   <a href="/admin/add-product"><button type="button" class="btn btn-primary  my-3" style="float: right;">Add Products</button></a> 
+  </div>
+  
+</section>
+<section>
+  <% if (message) { %>
+    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong><%= message.message %> </strong>
+    </div> 
+    <% } %>
+  <div class="container">
+    <table class="table table-success table-striped" id="userTable">
+      <% if(product !='') {%>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <!-- <th scope="col">Description</th> -->
+            <th scope="col">Category</th>
+            <th scope="col">Selling Price($)</th>
+            <th scope="col">Listing price($)</th>
+            <th scope="col">Stock count</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+          <% product.forEach((row,index) => { %>
+            <tr class="align-middle">
+              <th scope="row"><%=index+1 %></th>
+              <td><img style="height: 50px; width: 50px;" src="/uploads/<%= row.images[0] %>" ></td>
+              <td><%= row.name %></td>
+              <!-- <td><%= row.description %></td> -->
+              <td class="text-capitalize"><%= row.category.name %></td>
+              <td><%= row.selling_price %></td>
+              <td><%= row.listing_price %></td>
+              <td><%= row.stock_count %></td>
+              <td><%= row.status %></td>
+              <td>
+                <a href="/admin/edit-product/<%= row._id %>" class="text-success"><button type="button" class="btn btn-info" style="width: 70px;">Edit</button></i></a>
+
+                <% if(row.deleted == true) {%>
+                  <a href="/admin/list-product/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-secondary mt-2" style="width: 70px;">List</button></a>
+                  <%} else { %>
+                  <a href="/admin/unlist-product/<%= row._id %>" class="text-danger"><button type="button" class="btn btn-danger mt-2" style="width: 70px;">Unlist</button></a>
+                  <% } %>
+
+                <!-- <a href="/admin/delete-product/<%= row._id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+        <% } else { %>
+          <h1 class="text-center text-secondary mt-5">No products found in the database</h1>
+        <% } %>
+    </table>
+  </div>
+</section>

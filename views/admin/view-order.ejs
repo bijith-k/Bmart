@@ -1,0 +1,129 @@
+<%- include('../partials/admin_headside') %>
+
+  <section>
+    <div class="container">
+
+      <div class="table-responsive">
+        <table class="table table-success table-striped my-2">
+          <% orderInfo.forEach((order) => { %>
+          <thead>
+            <tr>
+              <td scope="row" colspan="4">Order Details</td>
+            </tr>
+            <tr>
+              <td scope="row" colspan="4">User : <%= order.userId.name %></td>
+            </tr>
+          </thead>
+          <tbody>
+           
+            <tr>
+              <th>Order ID</th>
+              <td><%= order._id %></td>
+              <th>Items</th>
+              <td><%= order.products.length %></td>
+            </tr>
+            <tr>
+              <th>Payment Status</th>
+              <td><%= order.payment.pay_status %></td>
+              <th>Sub Total</th>
+              <td>$<%= order.total %></td>
+            </tr>
+            <tr>
+              <th>Payment Method</th>
+              <td><%= order.payment.pay_method %></td>
+              <th>Discount(%)</th>
+              <td><%= order.coupon.discount %></td>
+            </tr>
+            <tr>
+              <th>Payment ID</th>
+              <td>--</td>
+              <th>Discount amount</th>
+              <td><%= order.discount_amount  %></td>
+            </tr>
+            <tr>
+              <th>Coupon Code</th>
+              <td><%= order.coupon.code %></td>
+              <th>Total</th>
+              <td><%= order.grand_total %></td>
+            </tr>
+           
+          </tbody>
+          <% }) %>
+        </table>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-success table-striped my-3">
+
+          <thead>
+            <tr>
+              <td scope="row" colspan="7">Delivery Address</td>
+            </tr>
+          </thead>
+          <thead>
+            
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">House</th>
+              <th scope="col">City</th>
+              <th scope="col">District</th>
+              <th scope="col">State</th>
+              <th scope="col">Post</th>
+              <th scope="col">Pin</th>
+            </tr>
+           
+          </thead>
+          <tbody>
+            <% orderInfo.forEach((order) => { %>
+            <tr>
+              <td><%= order.address.name %> </td>
+              <td><%= order.address.house %></td>
+              <td><%= order.address.city %></td>
+              <td><%= order.address.district %></td>
+              <td><%= order.address.state %></td>
+              <td><%= order.address.post %></td>
+              <td><%= order.address.pin  %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+
+        </table>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-success table-striped my-2">
+          <thead>
+            <tr>
+              <td scope="row" colspan="6">Product Details</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <th scope="col">NO</th>
+              <th scope="col">Image</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orderInfo[0].products.forEach((prod,index)=> { %>
+            <tr>
+              <th scope="row"><%= index+1 %></th>
+              <td><img style="height: 50px; width: 50px;" src="/uploads/<%= prod.item.images[0] %>" ></td>
+              <td><%= prod.item.name %></td>
+              <td>$<%= prod.item.selling_price %></td>
+              <td><%= prod.quantity %></td>
+              <td>$<%= prod.price %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+
+        </table>
+      </div>
+
+
+
+
+    </div>
+  </section>
