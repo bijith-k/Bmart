@@ -112,7 +112,7 @@
               <% userInfo.address.forEach((row,index)=>{ %>
                 <a class="text-decoration-none text-dark " data-bs-toggle="modal"
                   data-bs-target="#accountCreationModal">
-                  <div class="card p-3 bg-light my-2" id="<%= row._id %>item">
+                  <div class="card p-3 bg-light my-2" style="border-radius: 0;" id="<%= row._id %>item">
 
                     <div class="d-flex justify-content-between">
                       <h6>Address <%= index+1 %>
@@ -140,7 +140,7 @@
               <div class="container-fluid d-flex justify-content-center">
 
                 <a href="#"> <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-info" onclick="addaddress()" data-bs-toggle="modal"
+                  <button type="button" class="btn text-white" style="background-color: #55009b;" onclick="addaddress()" data-bs-toggle="modal"
                     data-bs-target="#exampleModal">
                     Add Address
                   </button></a>

@@ -35,9 +35,11 @@
 						<% categories.forEach((category)=>{ %>
 							<% if(category.deleted == false) {%>
 						<div style="padding-bottom: 5px; " id="haaai">
+							<li style="list-style: none;">
 							<a href="/categories?category=<%= category._id %>"  ><button id="sidebar-title" style="border:none; background-color: transparent;">
 									<h6 class="text-capitalize"><%= category.name %></h6>
 								</button></a>
+							</li>
 						</div>
 						<% } %>
 						<% } ) %>

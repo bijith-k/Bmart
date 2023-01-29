@@ -70,6 +70,8 @@ router.post('/add-order-address',verifyUser,userController.addOrderAddress)
 router.post("/apply-coupon",verifyUser, userController.applyCoupon);
 router.post("/remove-coupon",verifyUser, userController.removeCoupon)
 router.post('/place-order',verifyUser,userController.placeOrder)
+router.post('/verify-payment',verifyUser,userController.verifyPayment)
+
 
 
 

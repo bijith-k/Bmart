@@ -62,3 +62,5 @@ function wishlist(proId){
     }
   })
 }
+
+

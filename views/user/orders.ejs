@@ -30,32 +30,46 @@
             </div>
             <hr style="width: 100%;">
           </div>
- 
+
           <div class="table-responsive">
             
             <table class="table table-bordered">
               <thead>
-                <tr>
+                <tr class="text-center text-white" style="background-color: #55009b;">
                    
-                  <th scope="col">Ordered On</th>
-                  <th scope="col">Address</th>
-                  <th scope="col">Total Price</th>
-                  <th scope="col">Payment Method</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Action</th>
+                  <th scope="col" class="text-uppercase">Ordered On</th>
+                  <!-- <th scope="col" class="text-uppercase">Address</th> -->
+                  <th scope="col" class="text-uppercase">Total Price</th>
+                  <th scope="col" class="text-uppercase">Payment Method</th>
+                  <th scope="col" class="text-uppercase">Order <br> Status</th>
+                  <th scope="col" class="text-uppercase">Delivery <br> Status</th>
+                  <th scope="col" class="text-uppercase">Action</th>
                    
                 </tr>
               </thead>
               <tbody>
                 <% orderInfo.forEach((order) => { %>
-                <tr>
-                  <td><%= order.ordered_date.getDate()+ '-'+ (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %></td>
-                  <td><%= order.address.name %> <br> <%= order.address.house %> <br> <%= order.address.city %> <br> <%= order.address.district %> <br> <%= order.address.state %> <br> <%= order.address.post %> <br> <%= order.address.pin  %></td>
-                  <td><%= order.total %></td>
-                  <td><%= order.payment.pay_method  %></td>
-                  <td><%= order.order_status  %></td>
-                  <td><a href="/ordered-items/<%= order._id %>"  ><button type="button" class="btn btn-secondary " style="width: 90px; display: block;">View Products</button></i></a>
-                    <a href="/cancel-order/<%= order._id %>" ><button type="button" class="btn btn-danger mt-2" style="width: 90px;">Cancel Order</button></i></a>
+                <tr  >
+                  <td class="text-center"><%= order.ordered_date.getDate()+ '-'+ (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %></td>
+                  <!-- <td class="text-center"><%= order.address.name %> <br> <%= order.address.house %> <br> <%= order.address.city %> <br> <%= order.address.district %> <br> <%= order.address.state %> <br> <%= order.address.post %> <br> <%= order.address.pin  %></td> -->
+                  <td class="text-center">$<%= order.total %></td>
+                  <td class="text-center"><%= order.payment.pay_method  %></td>
+                  <td class="text-center text-capitalize""><%= order.order_status  %></td>
+                  <% if(order.delivery_status.ordered.state==true && order.delivery_status.cancelled.state==false && order.delivery_status.shipped.state==false && order.delivery_status.out_for_delivery.state==false && order.delivery_status.delivered.state==false ){ %>
+                  <td class="text-center text-capitalize"">Ordered</td>
+                  <% } else if(order.delivery_status.shipped.state==true ){ %>
+                    <td class="text-center text-capitalize"">Shipped</td>
+                  <% } else if(order.delivery_status.out_for_delivery.state==true){ %>
+                    <td class="text-center text-capitalize"">Out for delivery</td>
+                    <% } else if(order.delivery_status.delivered.state==true){ %>
+                      <td class="text-center text-capitalize"">Delivered</td>
+                      <% } else if(order.delivery_status.ordered.state==true && order.delivery_status.cancelled.state==true) { %>
+                        <td class="text-center text-capitalize"">Cancelled</td>
+                        <% } %>
+
+
+                  <td style="display: flex; justify-content: center;"><a href="/ordered-items/<%= order._id %>"  ><button type="button btn-sm" class="btn  text-white" style="width: 90px; display: block; background-color: #55009b;">View</button></i></a>
+                    <!-- <a href="/cancel-order/<%= order._id %>" ><button type="button btn-sm" class="btn btn-danger  " style="width: 90px;">Cancel</button></i></a> -->
                   </td>
                 </tr>
                 <% }) %>
@@ -64,7 +78,44 @@
             
           </div>
 
-         
+
+
+          <!-- <div class="border p-2 mt-2" id="">
+            <div id="addressList">
+              <h5 class="text-secondary border-bottom py-2 mb-2">Your Orders</h5>
+              <% orderInfo.forEach((order)=> { %>
+
+
+                <div class="card p-3 bg-light my-2  " style="display: flex;  border-radius: 0;">
+                  <div style=" display: flex; justify-content: space-between;">
+                    <h6 style="  display: inline;">Order Id : <%= order._id %>
+                    </h6>
+                    <h6 style="  display: inline; margin-right: 10%;">Order Date : <%= order.ordered_date.getDate()+ '-' +
+                        (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %>
+                    </h6>
+                  </div>
+                  <div style=" display: flex; justify-content: space-between;">
+                    <h6 style="  display: inline;">Status : <span class="text-uppercase">
+                        <%= order.order_status %>
+                      </span></h6>
+                    <a href="/ordered-items/<%= order._id %>" style="  display: inline;  margin-right: 10%;"><button type="button"
+                        class="btn text-white" style="background-color: #55009b;">View</button></i></a>
+
+                  </div>
+
+
+                </div>
+                </a>
+                <% }) %>
+            </div>
+
+
+
+          </div> -->
+
+
+
+
 
         </div>
       </div>

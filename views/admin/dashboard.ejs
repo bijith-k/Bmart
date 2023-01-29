@@ -7,71 +7,110 @@
           <div class="col-md-3">
             <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
               <div>
-                <h3 class="fs-2">720</h3>
-                <p class="fs-5">Products</p>
+                <h3 class="fs-2"><%= salesData.length %></h3>
+                <p class="fs-5">Orders</p>
               </div>
-              <i class="fas fa-gift fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+              <i class="fas fa-shopping-cart fs-1 primary-text border rounded-full secondary-bg p-3"></i>
             </div>
           </div>
           <div class="col-md-3">
             <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
               <div>
-                <h3 class="fs-2">720</h3>
+                <h3 class="fs-2"><%= products.length %></h3>
                 <p class="fs-5">Products</p>
               </div>
-              <i class="fas fa-gift fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+              <i class="fas fa-laptop fs-1 primary-text border rounded-full secondary-bg p-3"></i>
             </div>
           </div>
           <div class="col-md-3">
             <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
               <div>
-                <h3 class="fs-2">720</h3>
-                <p class="fs-5">Products</p>
+                <h3 class="fs-2"><%= categories.length %></h3>
+                <p class="fs-5">Categories</p>
               </div>
-              <i class="fas fa-gift fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+              <i class="fas fa-list fs-1 primary-text border rounded-full secondary-bg p-3"></i>
             </div>
           </div>
           <div class="col-md-3">
             <div class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
               <div>
-                <h3 class="fs-2">720</h3>
-                <p class="fs-5">Products</p>
+                <h3 class="fs-2"><%= users.length %></h3>
+                <p class="fs-5">Users</p>
               </div>
-              <i class="fas fa-gift fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+              <i class="fas fa-user fs-1 primary-text border rounded-full secondary-bg p-3"></i>
             </div>
           </div>
         </div>
 
+<div class="row  justify-content-around mt-4" id="graphs">
+        <div class="card col-12 col-md-5 mt-2" id="payContainer"  >
+          <canvas id="payment_method"></canvas>
+        </div>
+        <div class="card col-12 col-md-5 mt-2" id="orderContainer"  >
+          <canvas id="orders"> </canvas>
+        </div>
+        <div class="card col-12 col-md-5  mt-2" id="salesContainer"  >
+          <canvas id="sales"> </canvas>
+        </div>
+      </div>
         <div class="row my-5">
           <h3 class="fs-4 mb-3">Recent orders</h3>
-          <div class="col">
-            <table class="table table-dark table-striped">
+          <div class="table-responsive">
+            <table class="table table-dark table-bordered table-striped">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">First</th>
-                  <th scope="col">Last</th>
-                  <th scope="col">Handle</th>
+                  <th scope="col">No.</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">User</th>
+                <th scope="col">Number of items</th>
+                <th scope="col">Order date</th>
+                <th scope="col">Order status</th>
+                <th scope="col">Payment Method</th>
+                <th scope="col">Payment status</th>
+                <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td colspan="2">Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                <% order.forEach(function(orders,index){%>
+                  <tr class="align-middle">
+                    <th scope="row">
+                      <%= index+1 %>
+                    </th>
+                    <td>
+                      <%= orders._id %>
+                    </td>
+                    <td>
+                      <%= orders.userId.name %>
+                    </td>
+                    <td>
+                      <%= orders.products.length %>
+                    </td>
+                    <td>
+                      <%= orders.ordered_date.getDate()+ '-' + (orders.ordered_date.getMonth()+1) +'-'+
+                        orders.ordered_date.getFullYear() %>
+                    </td>
+                    <td>
+                      <%= orders.order_status %>
+                    </td>
+                    <td>
+                      <%= orders.payment.pay_method %>
+                    </td>
+                    <td>
+                      <%= orders.payment.pay_status %>
+                    </td>
+  
+                    <td>
+                      <a href="/admin/order-details/<%= orders._id %>" class="text-success"><button type="button"
+                          class="btn btn-secondary" style="width: 70px;">View</button></i></a>
+  
+                      <% if(orders.delivery_status.cancelled.state==false){ %>
+                        <a href="/admin/cancel-order/<%= orders._id %>" class="text-success"><button type="button"
+                            class="btn btn-danger mt-2" style="width: 70px;">Cancel</button></i></a>
+                        <% } %>
+  
+                    </td>
+                  </tr>
+                  <% })%>
               </tbody>
             </table>
           </div>
@@ -88,3 +127,152 @@
 
   </div>
  
+
+  <script>
+
+var ctx1 = $("#payment_method");
+
+
+var payMethodData = {
+  labels: [
+    'Cash On Delivery',
+    'Online',
+  ],
+  datasets: [{
+    label: 'Payment Method',
+    data: [ <%= codNum %> , <%= onlineNum %>  ],
+    backgroundColor: [
+    "#FAEBD7",
+          "#DCDCDC"
+    ],
+    borderColor: [
+          "#CDA776",
+          "#989898"
+        ],
+        borderWidth: [1, 1],
+    hoverOffset: 4
+  }]
+};
+
+var options = {
+    responsive: true,
+    title: {
+      display: true,
+      position: "top",
+      text: "Payment Method",
+      fontSize: 18,
+      fontColor: "#111"
+    },
+    legend: {
+      display: true,
+      position: "bottom",
+      labels: {
+        fontColor: "#333",
+        
+      }
+    }
+  };
+
+var payMethodGraph = new Chart(ctx1, {
+    type: "doughnut",
+    data: payMethodData,
+    options: options
+  });
+
+ 
+  </script>
+
+<script>
+
+  var ctx2 = $("#orders");
+  
+  
+  var orderData = {
+    labels: [
+      'Paid Orders',
+      'Payment Pending',
+      'Cancelled Orders',
+      'Pending Orders'
+
+    ],
+    datasets: [{
+      label: 'Order Data',
+      data: [ <%= paid %> , <%= paymentPending %> , <%= cancelledOrders %> , <%= pendingOrders %> ],
+      backgroundColor: [
+      "#FAEBD7",
+          "#DCDCDC",
+          "#E9967A",
+          "#F5DEB3",
+      ],
+      borderColor: [
+      "#E9DAC6",
+          "#CBCBCB",
+          "#D88569",
+          "#E4CDA2",
+          ],
+          borderWidth: [1, 1,1,1],
+      hoverOffset: 6
+    }]
+  };
+  
+  var options = {
+      responsive: true,
+      title: {
+        display: true,
+        position: "top",
+        text: "Order Data",
+        fontSize: 18,
+        fontColor: "#111"
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          fontColor: "#333",
+          
+        }
+      }
+    };
+  
+  var OrderGraph = new Chart(ctx2, {
+      type: "pie",
+      data: orderData,
+      options: options
+    });
+  
+   
+    </script>
+
+<script>
+
+ 
+<% let dates = salesChartDt.map((val)=>{ return val._id.slice(-2)}) %>
+<% let salesCount = salesChartDt.map((val)=>{ return val.count}) %>
+var xValues = [<%= dates%>];
+
+
+  var ctx3 = $("#sales");
+
+  const orderDatas = {
+  labels: xValues,
+  datasets: [{
+    label: 'Weekly Sales',
+    data:  [<%=salesCount %>],
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+    tension: 0.1
+  }]
+};
+  
+  
+   
+  
+  var OrderGraph = new Chart(ctx3, {
+      type:'line',
+      data: orderDatas
+    });
+  
+   
+    </script>
+
+   

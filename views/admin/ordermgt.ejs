@@ -1,53 +1,76 @@
 <%- include('../partials/admin_headside') %>
- 
-<section class="mt-5">
-  <% if (message) { %>
-    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
-      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-      <strong><%= message.message %> </strong>
-    </div> 
-    <% } %>
-  <div class="container">
-    <table class="table table-success table-striped" id="userTable">
-     
-        <thead>
-          <tr>
-            <th scope="col">No.</th>
-            <th scope="col">Order ID</th>
-            <th scope="col">User</th>
-            <th scope="col">Number of items</th>
-            <th scope="col">Order date</th>
-            <th scope="col">Order status</th>
-            <th scope="col">Payment Method</th>
-            <th scope="col">Payment status</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-         
-          <% order.forEach(function(orders,index){%>
-            <tr class="align-middle">
-              <th scope="row"><%= index+1 %></th>
-              <td><%= orders._id %></td>
-              <td><%= orders.userId.name %></td>
-              <td><%= orders.products.length %></td>
-              <td><%= orders.ordered_date.getDate()+ '-' + (orders.ordered_date.getMonth()+1) +'-'+ orders.ordered_date.getFullYear()  %></td>
-              <td><%= orders.order_status %></td>
-              <td><%= orders.payment.pay_method %></td>
-              <td><%= orders.payment.pay_status %></td>
-              
-              <td>
-                <a href="/admin/order-details/<%= orders._id %>" class="text-success"><button type="button" class="btn btn-secondary" style="width: 70px;">View</button></i></a>
 
-                 
-                <a href="/admin/cancel-order/<%= orders._id %>" class="text-success"><button type="button" class="btn btn-danger mt-2" style="width: 70px;">Cancel</button></i></a>
-                
+  <section class="mt-5">
+    <% if (message) { %>
+      <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>
+          <%= message.message %>
+        </strong>
+      </div>
+      <% } %>
+        <div class="container">
 
-              </td>
-            </tr>
-            
-        </tbody>
-        <% })%>
-    </table>
-  </div>
-</section>
+          <table class="table table-success table-striped table-bordered" id="userTable">
+
+            <thead>
+              <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">User</th>
+                <th scope="col">Number of items</th>
+                <th scope="col">Order date</th>
+                <th scope="col">Order status</th>
+                <th scope="col">Payment Method</th>
+                <th scope="col">Payment status</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <% order.forEach(function(orders,index){%>
+                <tr class="align-middle">
+                  <th scope="row">
+                    <%= index+1 %>
+                  </th>
+                  <td>
+                    <%= orders._id %>
+                  </td>
+                  <td>
+                    <%= orders.userId.name %>
+                  </td>
+                  <td>
+                    <%= orders.products.length %>
+                  </td>
+                  <td>
+                    <%= orders.ordered_date.getDate()+ '-' + (orders.ordered_date.getMonth()+1) +'-'+
+                      orders.ordered_date.getFullYear() %>
+                  </td>
+                  <td>
+                    <%= orders.order_status %>
+                  </td>
+                  <td>
+                    <%= orders.payment.pay_method %>
+                  </td>
+                  <td>
+                    <%= orders.payment.pay_status %>
+                  </td>
+
+                  <td>
+                    <a href="/admin/order-details/<%= orders._id %>" class="text-success"><button type="button"
+                        class="btn btn-secondary" style="width: 70px;">View</button></i></a>
+
+                    <% if(orders.delivery_status.cancelled.state==false){ %>
+                      <a href="/admin/cancel-order/<%= orders._id %>" class="text-success"><button type="button"
+                          class="btn btn-danger mt-2" style="width: 70px;">Cancel</button></i></a>
+                      <% } %>
+
+                  </td>
+                </tr>
+
+            </tbody>
+            <% })%>
+          </table>
+
+        </div>
+  </section>

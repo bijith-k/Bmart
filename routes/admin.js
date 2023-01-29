@@ -95,7 +95,7 @@ router.get('/delete-coupon/:id',controller.deleteCoupon)
 router.get('/order-details/:id',controller.order_details)
 router.get('/cancel-order/:id',controller.cancel_order)
 router.get('/admin-logout',controller.adminLogout)
-
+router.get('/invoice/:id',controller.invoice)
 
 
 router.post('/admin-login', controller.adminLogin)
@@ -108,7 +108,7 @@ router.post('/edit-category/:id',uploadOptions.single('image'),controller.editCa
 router.post('/edit-banner/:id',uploadOptions.single('image'),controller.editBanner)
 router.post('/edit-coupon/:id',controller.editCoupon)
 
-
+router.post('/delivery-status/:id',controller.deliveryStatus)
 
 
 

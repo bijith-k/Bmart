@@ -1,7 +1,7 @@
 <div id="sidebar" class="bg-purple">
   <div class="h4 text-white">Account</div>
   <ul>
-    <li class="sidebar">
+    <li class="sidebar <%= title === 'Account' ? 'active' : '' %>">
       <a href="/account" class="text-decoration-none d-flex align-items-start">
         <div class="far fa-user pt-2 me-3"></div>
         <div class="d-flex flex-column">
@@ -10,7 +10,7 @@
         </div>
       </a>
     </li>
-    <li class="sidebar">
+    <li class="sidebar <%= title === 'Address' ? 'active' : '' %>">
       <a href="/address" class="text-decoration-none d-flex align-items-start">
         <div class="far fa-address-book pt-2 me-3"></div>
         <div class="d-flex flex-column">
@@ -19,7 +19,7 @@
         </div>
       </a>
     </li>
-    <li class="sidebar">
+    <li class="sidebar <%= title === 'Orders' ? 'active' : '' %>">
       <a href="/orders" class="text-decoration-none d-flex align-items-start">
         <div class="fas fa-box-open pt-2 me-3"></div>
         <div class="d-flex flex-column">
@@ -29,7 +29,7 @@
       </a>
     </li>
     
-    <li class="sidebar">
+    <li class="sidebar <%= title === 'Settings' ? 'active' : '' %>">
       <a href="/settings" class="text-decoration-none d-flex align-items-start">
         <div class="fas fa-gear pt-2 me-3"></div>
         <div class="d-flex flex-column">
@@ -40,7 +40,7 @@
       
     </li>
 
-    <li class="sidebar">
+    <li class="sidebar ">
       <a href="/user-logout" class="text-decoration-none d-flex align-items-start">
         <div class="fas fa-right-from-bracket pt-2 me-3"></div>
         <div class="d-flex flex-column">

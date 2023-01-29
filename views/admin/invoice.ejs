@@ -1,0 +1,118 @@
+<%- include('../partials/admin_headside') %>
+
+<style>
+ 
+  </style>
+
+ 
+<div class="mx-4">
+   
+  <a class="btn btn-light text-capitalize border-0" onclick="printDiv('printInvoice')" data-mdb-ripple-color="dark"><i
+      class="fas fa-print text-primary"></i> Print</a>
+</div>
+<div class="card mx-4 my-3" id="printInvoice">
+  <div class="card-body">
+    <div class="container mb-5 mt-3"  name="printInvoice">
+      <div class="row d-flex align-items-baseline">
+        <div class="col-xl-12">
+          <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>ID: <%= orderInfo._id %></strong></p>
+        </div>
+        
+        <hr>
+      </div>
+
+      <div class="container ">
+        <div class="col-md-12 my-4">
+          <div class="text-center">
+            <h1>B MART</h1>
+            <p class="pt-0">bmart.club</p>
+          </div>
+
+        </div>
+
+
+        <div class="d-flex justify-content-between w-100">
+          <div class="col-xl-8">
+            <ul class="list-unstyled">
+              <li class="text-muted">To: <span style="color:#5d9fc5 ;"> <%= orderInfo.address.name %></span></li>
+              <li class="text-muted"><%= orderInfo.address.house %>, <%= orderInfo.address.city %></li>
+              <li class="text-muted"><%= orderInfo.address.district %>, <%= orderInfo.address.state %></li>
+              <li class="text-muted"><%= orderInfo.address.post %>,<%= orderInfo.address.pin  %></li>
+            </ul>
+          </div>
+          <div class="col-xl-4">
+            <p class="text-muted">Invoice</p>
+            <ul class="list-unstyled">
+              <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                  class="fw-bold">ID:</span><%= orderInfo._id %></li>
+              <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                  class="fw-bold">Order Date: </span><%= orderInfo.ordered_date.getDate()+ '-' + (orderInfo.ordered_date.getMonth()+1) +'-'+
+                  orderInfo.ordered_date.getFullYear() %></li>
+              <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                  class="me-1 fw-bold">Status:</span><span class="badge bg-warning text-black fw-bold">
+                    <%= orderInfo.payment.pay_status %></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row my-2 mx-1 justify-content-center">
+          <table class="table table-striped table-borderless">
+            <thead style="background-color:#84B0CA ;" class="text-white">
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orderInfo.products.forEach((prod,index)=> { %>
+              <tr>
+                <th scope="row"><%= index+1 %></th>
+                <td><%= prod.item.name %></td>
+                <td><%= prod.quantity %></td>
+                <td>$<%= prod.item.selling_price %></td>
+                <td>$<%= prod.price %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+
+          </table>
+        </div>
+        <div class="d-flex justify-content-between w-100">
+          <div class="col-xl-8">
+             
+
+          </div>
+          <div class="col-xl-3 ">
+            <ul class="list-unstyled">
+              <li class="text-muted ms-3 "><span class="text-black me-4" style="float:left;">Sub Total</span><span style="float:right;">$<%= orderInfo.total %></span></li>
+              <li class="text-muted ms-3 mt-2" ><span class="text-black me-4" style="float:left;">Discount(<%= orderInfo.coupon.discount %>%)</span><span style="float:right;">-$<%= orderInfo.discount_amount  %></span></li>
+              
+            </ul>
+            <p class="text-dark ms-3 mt-2"><span class="text-black me-4" style="float:left;"><b>Grand Total</b> </span><span style="float:right;"><b>$<%= orderInfo.grand_total %></b></span></p>
+             
+          </div>
+        </div>
+         
+         
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function printDiv(printInvoice){
+      var printContents = document.getElementById(printInvoice).innerHTML;
+      var originalContents = document.body.innerHTML;
+
+      document.body.innerHTML = printContents;
+
+      window.print();
+
+      document.body.innerHTML = originalContents;
+  }
+  </script>

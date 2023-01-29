@@ -3,52 +3,54 @@
   <section>
     <div class="container">
 
-      <div class="table-responsive">
+      <div class="table-responsive"  >
+        <button class="btn btn-success"><a href="/admin/invoice/<%= orderInfo._id %>" class="text-white">Print</a></button>
         <table class="table table-success table-striped my-2">
-          <% orderInfo.forEach((order) => { %>
+          
           <thead>
             <tr>
               <td scope="row" colspan="4">Order Details</td>
+              
             </tr>
             <tr>
-              <td scope="row" colspan="4">User : <%= order.userId.name %></td>
+              <td scope="row" colspan="4">User : <%= orderInfo.userId.name %></td>
             </tr>
           </thead>
           <tbody>
            
             <tr>
               <th>Order ID</th>
-              <td><%= order._id %></td>
+              <td><%= orderInfo._id %></td>
               <th>Items</th>
-              <td><%= order.products.length %></td>
+              <td><%= orderInfo.products.length %></td>
             </tr>
             <tr>
               <th>Payment Status</th>
-              <td><%= order.payment.pay_status %></td>
+              <td><%= orderInfo.payment.pay_status %></td>
               <th>Sub Total</th>
-              <td>$<%= order.total %></td>
+              <td>$<%= orderInfo.total %></td>
             </tr>
             <tr>
               <th>Payment Method</th>
-              <td><%= order.payment.pay_method %></td>
+              <td><%= orderInfo.payment.pay_method %></td>
               <th>Discount(%)</th>
-              <td><%= order.coupon.discount %></td>
+              <td><%= orderInfo.coupon.discount %></td>
             </tr>
             <tr>
               <th>Payment ID</th>
-              <td>--</td>
+              <td><%= orderInfo.payment.pay_id %></td>
               <th>Discount amount</th>
-              <td><%= order.discount_amount  %></td>
+              <td><%= orderInfo.discount_amount  %></td>
             </tr>
             <tr>
               <th>Coupon Code</th>
-              <td><%= order.coupon.code %></td>
+              <td><%= orderInfo.coupon.code %></td>
               <th>Total</th>
-              <td><%= order.grand_total %></td>
+              <td><%= orderInfo.grand_total %></td>
             </tr>
            
           </tbody>
-          <% }) %>
+           
         </table>
       </div>
       <div class="table-responsive">
@@ -73,22 +75,53 @@
            
           </thead>
           <tbody>
-            <% orderInfo.forEach((order) => { %>
+            
             <tr>
-              <td><%= order.address.name %> </td>
-              <td><%= order.address.house %></td>
-              <td><%= order.address.city %></td>
-              <td><%= order.address.district %></td>
-              <td><%= order.address.state %></td>
-              <td><%= order.address.post %></td>
-              <td><%= order.address.pin  %></td>
+              <td><%= orderInfo.address.name %> </td>
+              <td><%= orderInfo.address.house %></td>
+              <td><%= orderInfo.address.city %></td>
+              <td><%= orderInfo.address.district %></td>
+              <td><%= orderInfo.address.state %></td>
+              <td><%= orderInfo.address.post %></td>
+              <td><%= orderInfo.address.pin  %></td>
             </tr>
-            <% }) %>
+            
           </tbody>
 
         </table>
       </div>
+<div>
+  <div class="p-3  my-3 " style="border: 1px solid rgba(29, 11, 11, 0.145); background-color: #d1e7dd;">
+    
+    <form action="/admin/delivery-status/<%= orderInfo._id %>" method="post">
+    <h5>Delivery status</h5>
+    <span><input type="radio"   name="deliveryStatus" value="ordered" required 
+      <% if(orderInfo.delivery_status.ordered.state==true){ %> checked <% } %>>
+      <label for=" ">Ordered</label></span><br>
+    <span><input type="radio"   name="deliveryStatus" value="shipped" required
+      <% if(orderInfo.delivery_status.shipped.state==true){ %> checked <% } %>>
+        <label for=" ">Shipped</label></span><br>
+    <span><input type="radio"   name="deliveryStatus" value="outForDelivery" required
+      <% if(orderInfo.delivery_status.out_for_delivery.state==true){ %> checked <% } %>>
+        <label for=" ">Out For Delivery</label></span><br>
+        <span><input type="radio"   name="deliveryStatus" value="delivered" required
+          <% if(orderInfo.delivery_status.delivered.state==true){ %> checked <% } %>>
+          <label for=" ">Delivered</label></span><br>
 
+
+          <% if(orderInfo.delivery_status.delivered.state == false && orderInfo.delivery_status.cancelled.state == false){ %>
+            <button class="btn btn-success btn-sm my-2" type="submit" id="delStat">Update</button>
+          <% } else if(orderInfo.delivery_status.cancelled.state == true) { %>
+          <h5 class="mt-2 py-2 text-danger text-center" style="border: 1px solid rgba(0, 0, 0, 0.17); background-color: #c7dbd2;">Order Cancelled </h5>
+          <% } else if(orderInfo.delivery_status.delivered.state == true) { %>
+            <h5 class="mt-2 py-2 text-success text-center" style="border: 1px solid rgba(0, 0, 0, 0.17); background-color: #c7dbd2;">Order Delivered </h5>
+          <% } %>
+
+
+        </form>
+        
+</div>
+</div>
       <div class="table-responsive">
         <table class="table table-success table-striped my-2">
           <thead>
@@ -107,7 +140,7 @@
             </tr>
           </thead>
           <tbody>
-            <% orderInfo[0].products.forEach((prod,index)=> { %>
+            <% orderInfo.products.forEach((prod,index)=> { %>
             <tr>
               <th scope="row"><%= index+1 %></th>
               <td><img style="height: 50px; width: 50px;" src="/uploads/<%= prod.item.images[0] %>" ></td>
@@ -127,3 +160,6 @@
 
     </div>
   </section>
+
+
+ 

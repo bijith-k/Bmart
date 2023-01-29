@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref:"admin_users"
+    ref: "admin_users"
   },
   address: {
     name: {
@@ -12,37 +12,37 @@ const orderSchema = new mongoose.Schema({
     },
     house: {
       type: String,
-      
+
     },
     post: {
       type: String,
-       
+
     },
     city: {
       type: String,
-       
+
     },
     district: {
       type: String,
-       
+
     },
     state: {
       type: String,
-       
+
     },
     pin: {
       type: Number,
-       
+
     }
   },
-  total:{
-    type: Number,    
+  total: {
+    type: Number,
   },
-  discount_amount:{
-    type: Number, 
+  discount_amount: {
+    type: Number,
   },
-  grand_total:{
-    type: Number, 
+  grand_total: {
+    type: Number,
   },
   order_status: {
     type: String,
@@ -55,16 +55,33 @@ const orderSchema = new mongoose.Schema({
     pay_status: { type: String, default: 'pending' }
   },
   products: [{
-    item: { type: mongoose.Schema.Types.ObjectId,ref:'admin_products'   },
-     quantity: { type: Number,   },
-    price: { type: Number,   },
-     
+    item: { type: mongoose.Schema.Types.ObjectId, ref: 'admin_products' },
+    quantity: { type: Number, },
+    price: { type: Number, },
+
   }]
   ,
   delivery_status: {
-    shipped: { type: Boolean, default: false },
-    out_for_delivery: { type: Boolean, default: false },
-    delivered: { type: Boolean, default: false }
+    ordered:{
+      state:{type:Boolean, default:false},
+      date:{type:Date},
+  },
+    shipped: {
+      state: { type: Boolean, default: false },
+      date: { type: Date },
+    },
+    out_for_delivery: {
+      state: { type: Boolean, default: false },
+      date: { type: Date },
+    },
+    delivered: {
+      state: { type: Boolean, default: false },
+      date: { type: Date },
+    },
+    cancelled: {
+      state: { type: Boolean, default: false },
+      date: { type: Date },
+    }
   },
   coupon: {
     name: { type: String },

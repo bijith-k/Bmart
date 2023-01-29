@@ -10,16 +10,24 @@ const admin_products = require('../models/admin_products')
 const coupon = require('../models/admin_coupons')
 const orders = require('../models/admin_orders')
 const randomstring = require('randomstring')
-
+const Razorpay = require('razorpay')
+const { CLIENT_ID, APP_SECRET, KEY_ID, SECRET_KEY , mailId, password} = process.env;
 const ITEMS_PAGE = 6
 
+var instance = new Razorpay({
+  key_id: KEY_ID,
+  key_secret: SECRET_KEY
+})
+
+
+
 let transporter = nodemailer.createTransport({
-  host: "smtp-relay.sendinblue.com",
+  host: "smtp.office365.com",
   port: 587,
 
   auth: {
-    user: 'bijithkatteeri011@gmail.com',
-    pass: 'xjhfmHtc08wkOr9U',
+    user: mailId,
+    pass: password,
   }
 
 });
@@ -88,8 +96,8 @@ module.exports = {
     }
   },
   getOTP: (req, res) => {
-
-    let { name, email, password, phone } = req.body
+    console.log("innnnn");
+    // let { name, email, password, phone } = req.body
     Name = req.body.name,
       Email = req.body.email,
       Password = req.body.password,
@@ -104,7 +112,7 @@ module.exports = {
       } else {
         var mailOptions = {
           to: req.body.email,
-          from: 'bmart@gmail.com',
+          from: 'bmartlaps@outlook.com',
           subject: "Otp for registration is: ",
           html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
         }
@@ -120,29 +128,32 @@ module.exports = {
       }
     }).catch((err) => {
       console.log(err);
-      res.json({
-        status: 'FAILED',
-        message: 'An error occured while checking for existing user'
-      })
+      next(createError(404));
     })
   },
 
   resendOTP: (req, res) => {
-    var mailOptions = {
-      to: Email,
-      from: 'bmart@gmail.com',
-      subject: "Otp for registration is: ",
-      html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
-    }
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return console.log(error);
+    try {
+      var mailOptions = {
+        to: Email,
+        from: 'bmartlaps@outlook.com',
+        subject: "Otp for registration is: ",
+        html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
       }
-      console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-
-      res.render('user/otp', { title: 'Verify otp' })
-    });
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+  
+        res.render('user/otp', { title: 'Verify otp' })
+      });
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+   
   },
 
   verifyOTP: (req, res) => {
@@ -167,19 +178,21 @@ module.exports = {
           req.session.user = data
           res.redirect('/')
         }).catch((err) => {
-          res.json({
-            status: "FAILED",
-            message: 'An error occured while saving password'
-          })
+          // res.json({
+          //   status: "FAILED",
+          //   message: 'An error occured while saving password'
+          // })
           console.log(err);
+          next(createError(404));
         })
 
       }).catch((err) => {
         console.log(err);
-        res.json({
-          status: "FAILED",
-          message: 'An error occured while hashing password'
-        })
+        // res.json({
+        //   status: "FAILED",
+        //   message: 'An error occured while hashing password'
+        // })
+        next(createError(404));
       })
     } else {
       console.log('otp incorrect');
@@ -189,6 +202,7 @@ module.exports = {
       }
       req.session.userLoggedIn = false
       res.render('user/otp', { title: 'verify OTP' })
+
     }
   },
 
@@ -225,6 +239,7 @@ module.exports = {
               }
               req.session.userLoggedIn = true
               req.session.user = data
+               
               res.redirect('/')
             } else {
               req.session.userLoggedIn = false
@@ -236,11 +251,12 @@ module.exports = {
             }
           })
             .catch((err) => {
-              res.json({
-                status: 'FAILED',
-                message: 'An error occured while comparing'
-              })
+              // res.json({
+              //   status: 'FAILED',
+              //   message: 'An error occured while comparing'
+              // })
               console.log(err);
+              next(createError(404));
             })
         } else {
           req.session.message = {
@@ -278,7 +294,7 @@ module.exports = {
 
         var mailOptions = {
           to: oldUser.email,
-          from: 'bmart@gmail.com',
+          from: 'bmartlaps@outlook.com',
           subject: "Link for resetting password: ",
           html: '<p>Hi ' + oldUser.name + ',Forgot password?</p> <p> Click the link below to reset password </p><a href="http://localhost:3000/reset-password?token=' + randomStringg + '">Click here</a>' // html body
         }
@@ -306,6 +322,7 @@ module.exports = {
 
     } catch (err) {
       console.log(err);
+      next(createError(404));
     }
   },
 
@@ -324,6 +341,7 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
+      next(createError(404));
     }
   },
 
@@ -342,109 +360,134 @@ module.exports = {
       res.redirect('/user-signin')
     } catch (error) {
       console.log(error);
+      next(createError(404));
     }
   },
 
   productListing: async (req, res) => {
     // console.log(req.query.category);
-
-    const query = req.query.category
-    if (query) {
-      try {
-        const categories = await Category.find()
-        const products = await admin_products.find({ category: query })
-        res.render('user/listing', { products, categories, title: 'categories' })
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-    else if (req.query.search) {
-      try {
-        let key = req.query.search
-        // let regex = new RegExp('^'+skey+'.*','i');
-        // let products = await admin_products.aggregate([{$match:{ $or: [{name: regex },{discription: regex}] }}])
-        let products = await admin_products.find({ name: { $regex: key, $options: 'i' }, deleted: false })
-        const categories = await Category.find()
-        res.render('user/listing', { products, categories, title: 'categories' })
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    else if (req.query.sort) {
-      try {
-        if (req.query.sort == "name") {
-          let products = await admin_products.find().collation({ locale: "en" }).sort({ name: 1 })
-          const categories = await Category.find()
-          res.render('user/listing', { products, categories, title: 'categories' })
-        }
-        else if (req.query.sort = "price") {
-          let products = await admin_products.find().sort({ selling_price: -1 }).collation({ locale: "en", numericOrdering: true })
-          const categories = await Category.find()
-          res.render('user/listing', { products, categories, title: 'categories' })
-        }
-
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    else if (req.query.page) {
-      const page = req.query.page
-      let products = await admin_products.find({ deleted: false }).skip((page - 1) * ITEMS_PAGE).limit(ITEMS_PAGE)
+try {
+  const query = req.query.category
+  if (query) {
+    try {
       const categories = await Category.find()
+      const products = await admin_products.find({ category: query })
       res.render('user/listing', { products, categories, title: 'categories' })
     }
-    else {
-      const categories = await Category.find()
-      const products = await admin_products.find()
-      res.render('user/listing', { products, categories, title: 'categories' })
+    catch (error) {
+      console.log(error);
     }
+  }
+  else if (req.query.search) {
+    try {
+      let key = req.query.search
+      // let regex = new RegExp('^'+skey+'.*','i');
+      // let products = await admin_products.aggregate([{$match:{ $or: [{name: regex },{discription: regex}] }}])
+      let products = await admin_products.find({ name: { $regex: key, $options: 'i' }, deleted: false })
+      const categories = await Category.find()
+      res.render('user/listing', { products, categories, title: 'categories' })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  else if (req.query.sort) {
+    try {
+      if (req.query.sort == "name") {
+        let products = await admin_products.find().collation({ locale: "en" }).sort({ name: 1 })
+        const categories = await Category.find()
+        res.render('user/listing', { products, categories, title: 'categories' })
+      }
+      else if (req.query.sort = "price") {
+        let products = await admin_products.find().sort({ selling_price: -1 }).collation({ locale: "en", numericOrdering: true })
+        const categories = await Category.find()
+        res.render('user/listing', { products, categories, title: 'categories' })
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  else if (req.query.page) {
+    const page = req.query.page
+    let products = await admin_products.find({ deleted: false }).skip((page - 1) * ITEMS_PAGE).limit(ITEMS_PAGE)
+    const categories = await Category.find()
+    res.render('user/listing', { products, categories, title: 'categories' })
+  }
+  else {
+    const categories = await Category.find()
+    const products = await admin_products.find()
+    res.render('user/listing', { products, categories, title: 'categories' })
+  }
+} catch (error) {
+  console.log(error);
+  next(createError(404));
+}
+   
 
   },
 
   singleProduct: async (req, res) => {
-    let id = req.params.id
+    try {
+      let id = req.params.id
 
-    admin_products.findById(id, (err, product) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (product == null) {
-          res.redirect('/categories')
+      admin_products.findById(id, (err, product) => {
+        if (err) {
+          console.log(err);
         } else {
-          res.render('user/single-product', { title: 'Product', product: product })
+          if (product == null) {
+            res.redirect('/categories')
+          } else {
+            res.render('user/single-product', { title: 'Product', product: product })
+          }
         }
-      }
-    }).populate('category')
+      }).populate('category')
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+   
   },
 
 
   accountPage: async (req, res) => {
-    let id = req.session.user._id
-    let userInfo = await admin_users.findById({ _id: id })
-    res.render('user/account', { title: 'Account', userInfo })
+    try {
+      let id = req.session.user._id
+      let userInfo = await admin_users.findById({ _id: id })
+      res.render('user/account', { title: 'Account', userInfo })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+   
   },
 
   addressPage: async (req, res) => {
+
     let id = req.session.user._id
     let userInfo = await admin_users.findById({ _id: id })
     res.render('user/address', { title: 'Address', userInfo })
   },
 
   addAddress: async (req, res) => {
-    let id = req.session.user._id
-    let newaddresss = {
-      'name': req.body.name,
-      'house': req.body.house,
-      'post': req.body.post,
-      'city': req.body.city,
-      'district': req.body.district,
-      'state': req.body.state,
-      'pin': req.body.pin
+    try {
+      let id = req.session.user._id
+      let newaddresss = {
+        'name': req.body.name,
+        'house': req.body.house,
+        'post': req.body.post,
+        'city': req.body.city,
+        'district': req.body.district,
+        'state': req.body.state,
+        'pin': req.body.pin
+      }
+      await admin_users.updateOne({ _id: id }, { $push: { address: newaddresss } })
+  
+      res.redirect('/address')
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
     }
-    await admin_users.updateOne({ _id: id }, { $push: { address: newaddresss } })
-
-    res.redirect('/address')
+   
   },
 
   editAddressPage: async (req, res) => {
@@ -461,6 +504,7 @@ module.exports = {
 
     } catch (err) {
       console.log(err);
+      next(createError(404));
     }
   },
 
@@ -482,6 +526,7 @@ module.exports = {
       })
     } catch (err) {
       console.log(err);
+      next(createError(404));
     }
 
   },
@@ -496,12 +541,14 @@ module.exports = {
     }
     catch (err) {
       console.log(err);
+      next(createError(404));
     }
 
   },
 
   editInfo: (req, res) => {
-    let id = req.session.user._id
+    try {
+      let id = req.session.user._id
     admin_users.findByIdAndUpdate(id, {
       name: req.body.name,
       email: req.body.email,
@@ -518,6 +565,11 @@ module.exports = {
         res.redirect('/account')
       }
     })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   },
 
   settingsPage: async (req, res) => {
@@ -541,12 +593,13 @@ module.exports = {
       res.redirect('/settings')
     } catch (error) {
       console.log(error);
+      next(createError(404));
     }
   },
 
   addOrderAddress: async (req, res) => {
-
-    let id = req.session.user._id
+try {
+  let id = req.session.user._id
     let newaddresss = {
       'name': req.body.name,
       'house': req.body.house,
@@ -559,6 +612,11 @@ module.exports = {
 
     await admin_users.updateOne({ _id: id }, { $push: { address: newaddresss } })
     res.redirect('/checkout')
+} catch (error) {
+  console.log(error);
+  next(createError(404));
+}
+    
 
   },
 
@@ -633,6 +691,7 @@ module.exports = {
       req.session.coupon = null
       res.json({ success: false });
       console.log(err);
+      next(createError(404));
     };
   },
 
@@ -665,13 +724,17 @@ module.exports = {
     }
     catch (err) {
       console.log(err);
+       
+      next(createError(404));
     }
   },
 
   placeOrder: async (req, res) => {
-    let order = req.body
+    try {
+      let order = req.body
     // console.log(order['order-address']);
     // console.log(order);
+    let cartData = await cart.findOne({ user: order.userId })
     if (req.session.coupon != null) {
       couponData = req.session.coupon
       let userCoupon = await coupon.findOne({ code: couponData })
@@ -680,8 +743,17 @@ module.exports = {
         code: userCoupon.code,
         discount: userCoupon.discount,
       }
+      if (userCoupon) {
+        let discount = Math.round(cartData.totalprice * (userCoupon.discount / 100))
 
-
+        if (discount > userCoupon.cap) {
+          maxDiscount = Math.round(userCoupon.cap)
+          total = cartData.totalprice - maxDiscount
+        } else {
+          total = cartData.totalprice - discount
+          maxDiscount = discount
+        }
+      }
 
     } else {
 
@@ -690,37 +762,12 @@ module.exports = {
         code: 'nil',
         discount: 0,
       }
-
-    }
-
-
-    //errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-
-
-
-    console.log(order);
-    couponData = req.session.coupon
-    let userCoupon = await coupon.findOne({ code: couponData })
-    console.log(userCoupon, "jsdf");
-
-    let cartData = await cart.findOne({ user: order.userId })
-    if (userCoupon) {
-      let discount = Math.round(cartData.totalprice * (userCoupon.discount / 100))
-
-      if (discount > userCoupon.cap) {
-        maxDiscount = Math.round(userCoupon.cap)
-        total = cartData.totalprice - maxDiscount
-      } else {
-        total = cartData.totalprice - discount
-        maxDiscount = discount
-      }
-    } else {
       total = cartData.totalprice
       maxDiscount = 0
+
     }
 
-
-
+    console.log(order);
 
     let selectAddress = await admin_users.findOne({ _id: order.userId }, { 'address': 1, _id: 0 }).exec()
     let addr = selectAddress.address[order['order-address']]
@@ -729,9 +776,6 @@ module.exports = {
     console.log(prods, "products");
     let totalPrice = cartData.totalprice
     // console.log(req.body,products,totalPrice,userId);
-
-
-
 
     let status = order['payment-method'] === 'COD' ? 'placed' : 'pending'
 
@@ -746,44 +790,114 @@ module.exports = {
       discount_amount: maxDiscount,
       grand_total: total,
       products: prods,
-      order_status: status
+      order_status: status,
+      delivery_status: {
+        ordered: {
+          state: true
+        }
+      }
     })
 
     let userOrder = await orderData.save().then(req.session.coupon = null)
 
-    res.json({ status: true })
+    if (order['payment-method'] === 'COD') {
+      await orders.updateOne({ _id: userOrder._id }, { $set: {"payment.pay_id": "COD_"+userOrder._id } })
+      await cart.deleteOne({ user: order.userId })
+      res.json({ codSuccess: true })
+    }
+    else {
+ 
+      var options = {
+        amount: userOrder.grand_total*100,
+        currency: "USD",
+        receipt: "" + userOrder._id
+      }
+      instance.orders.create(options, function (err, order) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(order, "orrd");
+          res.json(order)
+        }
 
-    let deleteCart = await cart.deleteOne({ user: order.userId })
+      })
 
+    }
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   },
+
+  verifyPayment: async (req, res) => {
+    try {
+      let id = req.session.user._id
+    console.log(req.body, "bod");
+    const crypto = require('crypto')
+    let hmac = crypto.createHmac('sha256', SECRET_KEY)
+    hmac.update(req.body.payment.razorpay_order_id + '|' + req.body.payment.razorpay_payment_id)
+    hmac = hmac.digest('hex')
+    if (hmac == req.body.payment.razorpay_signature) {
+      await orders.updateOne({ _id: req.body.order.receipt }, { $set: { order_status: 'placed', "payment.pay_status": 'success',"payment.pay_id": req.body.payment.razorpay_payment_id } })
+      await cart.deleteOne({ user: id })
+      console.log("successs");
+      res.json({ status: true })
+    } else {
+      console.log("failed");
+      await orders.updateOne({ _id: req.body.order.receipt }, { $set: { order_status: 'failed', "payment.pay_status": 'failed',"payment.pay_id":"failed" } })
+      res.json({ status: false,errMsg:'' })
+    }
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
+  },
+  
+
 
   orderSuccessPage: (req, res) => {
     res.render('user/order-success', { title: 'Order Success' })
   },
 
   orderPage: async (req, res) => {
-    let id = req.session.user._id
-    let userInfo = await admin_users.findById({ _id: id })
-    let orderInfo = await orders.find({ userId: id })
-    res.render('user/orders', { title: 'Orders', userInfo, orderInfo })
+    try {
+      let id = req.session.user._id
+      let userInfo = await admin_users.findById({ _id: id })
+      let orderInfo = await orders.find({ userId: id }).sort({ordered_date:-1})
+      res.render('user/orders', { title: 'Orders', userInfo, orderInfo })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+   
   },
 
   orderProductsPage: async (req, res) => {
-    let usersId = req.session.user._id
-    let ordId = req.params.id
-    let userInfo = await admin_users.findById({ _id: usersId })
-    let orderInfo = await orders.find({ userId: usersId, _id: ordId }).populate('products.item')
-    res.render('user/ordered_items', { title: 'Orders', userInfo, orderInfo })
+    try {
+      let usersId = req.session.user._id
+      let ordId = req.params.id
+      let userInfo = await admin_users.findById({ _id: usersId })
+      let orderInfo = await orders.find({ userId: usersId, _id: ordId }).populate('products.item')
+  
+      res.render('user/ordered_items', { title: 'Orders', userInfo, orderInfo })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+   
   },
 
   userCancelOrder: async (req, res) => {
     try {
       orderId = req.params.id
-      orders.updateOne({ _id: orderId }, { $set: { order_status: 'cancelled' } }).then(() => {
-        res.redirect('/orders')
+      orders.updateOne({ _id: orderId }, { $set: { order_status: 'cancelled', 'delivery_status.cancelled.state': true, 'delivery_status.cancelled.date': Date.now() } }).then(() => {
+        res.redirect('/ordered-items/'+orderId)
       })
     } catch (err) {
       console.log(err);
+      next(createError(404));
     }
 
   },

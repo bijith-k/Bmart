@@ -23,19 +23,14 @@
       </div>
       <div class="col-lg-9 my-lg-0 my-1">
         <div id="main-content" class="bg-light border">
-          <div class="d-flex flex-column">
-            <div class="h5">Hello <%= userInfo.name %>
-            </div>
-            <div>Logged in as: <%= userInfo.email %>
-            </div>
-            <hr style="width: 100%;">
-          </div>
 
-          <div class="row" id="ordered-items"  >
-             
-            <% orderInfo[0].products.forEach((prod)=> { %>
+
+          <div class="row" id="ordered-items">
+
+            <!-- <% orderInfo[0].products.forEach((prod)=> { %>
               <div class="card m-2 " style="width: 15rem; height: 29rem;">
-                <img class="card-img-top mt-2" src="/uploads/<%= prod.item.images[0]  %>" alt="Pro-img" style="height: 12rem;">
+                <img class="card-img-top mt-2" src="/uploads/<%= prod.item.images[0]  %>" alt="Pro-img"
+                  style="height: 12rem;">
                 <div class="card-body">
                   <h5 class="card-title">
                     <%= prod.item.name %>
@@ -49,9 +44,130 @@
                 </div>
 
               </div>
-              <% }) %>
+              <% }) %> -->
+             
+                <div class="border p-2 mt-2" id="">
+                  <div id="">
 
-           </div>
+                    <h5 class="text-secondary border-bottom py-2 mb-2">View Order</h5>
+
+                     
+                    <% orderInfo.forEach((prod)=> { %>
+                      <% if(prod.order_status =="cancelled" ){ %>
+                      <div class="card  bg-light my-2" style="border-radius: 0;" id=" item">
+                        
+                              <div class="bg-danger p-3 ">
+                                <h5 class="text-white text-center text-uppercase m-3"> Order is cancelled</h5>
+                              </div>
+                              
+                      </div>
+                      <% } %>
+                                <% }) %>
+                      <div class="card p-3 bg-light my-2" style="border-radius: 0;" id=" item">
+                         <h6 class="text-secondary border-bottom py-2 mb-2">Delivery Address</h6>
+                         <% orderInfo.forEach((order) => { %>
+                         <p ><%= order.address.name %> , <%= order.address.house %> <br> <%= order.address.city %> , <%= order.address.district %> <br> <%= order.address.state %> , <%= order.address.post %> , <%= order.address.pin  %></p>
+                         <% }) %>
+                      </div>
+                      <div class="card p-3 bg-light my-2" style="border-radius: 0;" id=" item">
+                        <h6 class="text-secondary border-bottom py-2 mb-2">Products</h6>
+                        <div class="table-responsive">
+                          <table class="table table-secondary table-striped my-2">
+                             
+                            <!-- <thead>
+                              <tr>
+                                <th scope="col">NO</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                              </tr>
+                            </thead> -->
+                            <tbody>
+                              <% orderInfo[0].products.forEach((prod,index)=> { %>
+                              <tr>
+                                <!-- <th class="text-center" scope="row"><%= index+1 %></th> -->
+                                <td class="text-center"><img style="height: 50px; width: 50px; box-shadow: none; border-radius: 0;" src="/uploads/<%= prod.item.images[0] %>" ></td>
+                                <td class="text-center"><%= prod.item.name %></td>
+                                <td class="text-center">$<%= prod.item.selling_price %> x </td>
+                                <td class="text-center"><%= prod.quantity %></td>
+                                <td class="text-center"> <b> $<%= prod.price %></b></td>
+                              </tr>
+                              <% }) %>
+                            </tbody>
+                  
+                          </table>
+                        </div>
+                     </div>
+
+                     <div class="card p-3 bg-light my-2" style="border-radius: 0;" id=" item">
+                      <h6 class="text-secondary border-bottom py-2 mb-2">Bill Details</h6>
+                      <div class="table-responsive"  >
+                        <table class="table table-secondary table-striped my-2">
+                          <% orderInfo.forEach((order)=> { %>
+                          <tbody>
+                           
+                            <tr>
+                              <td>Order ID</td>
+                              <td><%= order._id %></td>
+                              <td>Items</td>
+                              <td><%= order.products.length %></td>
+                            </tr>
+                            <tr>
+                              <td>Payment Status</td>
+                              <td><%= order.payment.pay_status %></td>
+                              <td>Sub Total</td>
+                              <td>$<%= order.total %></td>
+                            </tr>
+                            <tr>
+                              <td>Payment Method</td>
+                              <td><%= order.payment.pay_method %></td>
+                              <td>Discount(%)</td>
+                              <td><%= order.coupon.discount %></td>
+                            </tr>
+                            <tr>
+                              <td>Payment ID</td>
+                              <td><%= order.payment.pay_id %></td>
+                              <td>Discount amount</td>
+                              <td><%= order.discount_amount  %></td>
+                            </tr>
+                            <tr>
+                              <td>Coupon Code</td>
+                              <td><%= order.coupon.code %></td>
+                              <td>Total</td>
+                              <td><b> $<%= order.grand_total %></b></td>
+                            </tr>
+                           
+                          </tbody>
+                           <% }) %>
+                        </table>
+                      </div>
+                   
+                   <% orderInfo.forEach((order) => { %>
+                    <% if(order.order_status !="cancelled" ){ %>
+                   <div class="card p-3 bg-light my-2" style="border-radius: 0;" id=" item">
+                    <h6 class="text-secondary border-bottom py-2 mb-2">Cancel Order</h6>
+                    
+                      <p>You can cancel your order here. But you can't revert it</p>
+                    <a href="/cancel-order/<%= order._id %>" ><button type="button btn-sm" class="btn btn-danger  " style="width: 90px;">Cancel</button></i></a>
+                       
+                 </div>
+                 <% } %>
+                    <% }) %>
+
+                    </div>
+                      
+
+                  </div>
+
+
+
+                </div>
+
+
+
+          </div>
 
 
 

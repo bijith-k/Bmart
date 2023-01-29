@@ -1,5 +1,7 @@
 <%- include('../partials/user_header') %>
 
+
+
     <div class="modal fade border-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -84,7 +86,7 @@
 
     <div class="container">
         <h2 class="text-center py-4">CHECKOUT</h2>
-        <form action="" id="checkout-form">
+        <form action="" id="checkout-form" name="check">
             <div class="row">
 
                 <div class="col-md-4 order-md-2 mb-4 mt-2">
@@ -129,7 +131,7 @@
                         </li>
                     </ul>
                     <input type="text" name="userId" value="<%= cartInfo.user %>" hidden>
-                    <form class="card p-2 mt-3">
+                    <form class="card p-2 mt-3" name="couponsForm">
                         <p>Do you have any coupon codes?</p>
                         <div class="input-group">
 
@@ -160,6 +162,7 @@
 
                     <button class="btn w-100 text-white" style=" background-color: #44007c" type="submit">PLACE
                         ORDER</button>
+                    <div id="paypal-button-container" class="mt-3"></div>
                 </div>
 
 
@@ -233,6 +236,9 @@
                 $('#total').val(currentValue)
             })
 
+
+
+
             $("#apply-coupon").click(function () {
                 var couponCode = $("#coupon-code").val();
                 $.ajax({
@@ -248,16 +254,39 @@
                             // document.getElementById(total).innerHTML = newTotal
                             // document.getElementById(discount).innerHTML = discount
                             $("#discount").text(discount);
-                            alert("Coupon applied! New total: " + newTotal);
+                            // alert("Coupon applied! New total: " + newTotal);
+                            Swal.fire(
+                                'Success',
+                                'Coupon applied!',
+                                'success'
+                            )
                             $("#myDiv").show();
 
                         } else if (response.notapplicable) {
-                            alert("Can't apply the coupon");
+                            // alert("Can't apply the coupon");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: "Can't apply the coupon!",
+
+                            })
                         } else if (response.expired) {
-                            alert("Coupon expired");
+                            // alert("Coupon expired");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Coupon expired!',
+
+                            })
                         }
                         else {
-                            alert("Invalid coupon code or you have already applied this coupon");
+                            // alert("Invalid coupon code or you have already applied this coupon");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Invalid coupon code or you have already applied this coupon!',
+
+                            })
                         }
                     }
                 });
@@ -275,7 +304,7 @@
             button1.addEventListener("click", function (event) {
                 event.preventDefault();
                 var couponCode = $("#coupon-code").val();
-                 
+
                 $.ajax({
                     type: "POST",
                     url: "/remove-coupon",
@@ -289,12 +318,22 @@
                             // document.getElementById(total).innerHTML = newTotal
                             // document.getElementById(discount).innerHTML = discount
                             $("#discount").text(discount);
-                            alert("Coupon Removed ");
+                            Swal.fire(
+                                'Success',
+                                'Coupon removed',
+                                'success'
+                            )
                             $("#myDiv").hide();
                             document.getElementById("coupon-code").value = "";
                         }
                         else {
-                            alert("Error while removing applied coupon");
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong while removing applied coupon!',
+
+                            })
                         }
                     }
                 });
@@ -318,11 +357,90 @@
                     method: 'post',
                     data: $('#checkout-form').serialize(),
                     success: (response) => {
-                        alert(response)
-                        if (response.status) {
-                            location.href = '/order-success'
+                        if (response.codSuccess) {
+                            Swal.fire(
+                                'Success',
+                                'Your order is placed',
+                                'success'
+                            ).then(() => {
+                                location.href = '/order-success'
+                            })
+                        } else {
+                            razorpayPayment(response)
                         }
+
                     }
                 })
             })
+
+            function razorpayPayment(order) {
+
+                var options = {
+                    "key": 'rzp_test_AjnMxfEbAXOegH', // Enter the Key ID generated from the Dashboard
+                    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "USD",
+                    "name": "B Mart",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+
+                        verifyPayment(response, order)
+                    },
+                    "prefill": {
+                        "name": "name",
+                        "email": "name@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+
+                rzp1.on('payment.failed', function (response) {
+
+                    
+                });
+
+                rzp1.open();
+            }
+
+            function verifyPayment(payment, order) {
+
+                $.ajax({
+                    url: '/verify-payment',
+                    data: {
+                        payment,
+                        order
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response.status) {
+                            Swal.fire(
+                                'Success',
+                                'Payment Sucess, your order is placed',
+                                'success'
+                            ).then(() => {
+                                location.href = '/order-success'
+                            })
+
+                        } else {
+                            Swal.fire(
+                                'Failed',
+                                'Payment failed!!!!',
+                                'error'
+                            ).then(()=>{
+                                location.href = '/cart'
+                            })
+                            
+                        }
+                    }
+                })
+            }
+
+
         </script>

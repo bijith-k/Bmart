@@ -13,7 +13,7 @@ module.exports = {
   cartPage:  async (req, res) => {
     let userId = req.session.user._id
     let prodList = await cart.find({ user: ObjectId(userId) }).populate('products.item')
-    console.log(prodList,"cartitems");
+    // console.log(prodList,"cartitems");
     res.render('user/cart', { title: 'Cart', prodList })
   },
 
