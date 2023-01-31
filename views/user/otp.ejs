@@ -31,6 +31,11 @@
 <div class="row">
   <div class="col-12 col-sm-8 col-md-6 mx-auto p-5">
     <div class="card border-0 shadow">
+      <% if(errorMessage) { %>
+        <div class="alert alert-danger">
+            <%= errorMessage %>
+        </div>
+    <% } %>
       <% if (message) { %>
         <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
           <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>

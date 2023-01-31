@@ -24,11 +24,11 @@
             </select>
            
             <label for="lprice">Enter listing price</label>
-            <input type="text" name="listing_price" id="lp" class="form-control" required>
+            <input type="number" name="listing_price" id="lp" class="form-control" required>
             <label for="sprice">Enter selling price</label>
-            <input type="text" name="selling_price" id="sp" class="form-control" required>
+            <input type="number" name="selling_price" id="sp" class="form-control" required>
             <label for="scount">Enter stock count</label>
-            <input type="text" name="stock_count" class="form-control" required>
+            <input type="number" id="amountInput" name="stock_count" class="form-control" required>
             <label for="uploadimage">Upload images</label>
             <!-- <div   class="preview-container bg-white text-dark"  ></div> -->
             <input type="file" name="images" id="file-input" accept='image/*' class="form-control" multiple required>
@@ -77,6 +77,19 @@ function validateForm() {
 }
 
   </script>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function (event) {
+const amountInput = document.querySelector('#amountInput');
+const selling_price = document.querySelector('#sp');
+const listing_price = document.querySelector('#lp');
+
+if (amountInput.value < 0 || selling_price.value<0 || listing_price < 0 ) {
+  event.preventDefault();
+  alert("The stock count and price's should not be negative");
+}
+});
+</script>
   
   <!-- <script>
     const fileInput = document.querySelector('input[type="file"]');

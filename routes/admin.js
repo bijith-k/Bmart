@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const admin_users = require('../models/admin_users')
 const multer = require('multer')
+const admin_users = require('../models/admin_users')
 const fs = require('fs')
 const path = require('path')
 const admin_products = require('../models/admin_products')
@@ -12,21 +12,25 @@ const Category = require('../models/admin_category')
 const banner = require('../models/admin_banner')
 const sharp = require('sharp')
 const coupon = require('../models/admin_coupons')
-//  const imageUpload = require('../controllers/imageUpload')
 
-//image upload
-// var storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, './public/uploads')
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname)
-//   },
-// })
 
-// var upload = multer({
-//   storage: storage,
-// })
+
+const {addBanner,addBannerPage,addCategory,
+  addCategoryPage,addCoupon,addCouponPage,
+  addProducts,addProductsPage,addUsers,addUsersPage,
+  adminLogin,adminLoginPage,adminLogout,admin_panel,
+  allProducts,allUsers,bannerPage,blockUser,cancel_order,categoryPage,
+  couponPage,deleteBanner,deleteCategory,deleteCoupon,deleteProducts,deleteUsers,
+  deliveryStatus,disableBanner,editBanner,editBannerPage,editCategory,
+  editCategoryPage,editCoupon,editCouponPage,editProducts,
+  editProductsPage,editUsers,editUsersPage,enableBanner,getResultImages,
+  invoice,listCategory,listProduct,order_details,resizeImages,status,unblockUser,
+  unlistCategory,unlistProduct,uploadImages,vieworder,report,salesReport
+} = require('../controllers/admin_controller')
+
+
+
+ 
 
 const FILE_TYPE_MAP = {
     'image/png':'png',
@@ -66,58 +70,61 @@ const verifyAdmin = (req, res, next) => {
 }
 
 
-router.get('/',controller.adminLoginPage)
-router.get('/admin-panel',verifyAdmin, controller.admin_panel )
-router.get('/admin-product',verifyAdmin,controller.allProducts)
-router.get('/admin-user',verifyAdmin, controller.allUsers)
-router.get('/admin-category',verifyAdmin,controller.categoryPage)
-router.get('/admin-order',verifyAdmin,controller.vieworder)
-router.get('/admin-coupon',verifyAdmin,controller.couponPage)
-router.get('/admin-banner',verifyAdmin,controller.bannerPage)
-router.get('/add-product',verifyAdmin, controller.addProductsPage)
-router.get('/add-category',verifyAdmin,controller.addCategoryPage)
-router.get('/add-banner',verifyAdmin,controller.addBannerPage)
-router.get('/add-coupon',controller.addCouponPage)
-router.get('/edit-product/:id',verifyAdmin, controller.editProductsPage )
-router.get('/edit-category/:id',controller.editCategoryPage)
-router.get('/edit-banner/:id',controller.editBannerPage)
-router.get('/edit-coupon/:id',controller.editCouponPage)
-router.get('/unlist-product/:id',controller.unlistProduct)
-router.get('/list-product/:id',controller.listProduct)
-router.get('/unlist-category/:id',controller.unlistCategory)
-router.get('/list-category/:id',controller.listCategory)
-router.get('/unlist-banner/:id',controller.disableBanner)
-router.get('/list-banner/:id',controller.enableBanner)
-router.get('/block-user/:id',verifyAdmin,controller.blockUser)
-router.get('/unblock-user/:id',verifyAdmin,controller.unblockUser)
-router.get('/delete-banner/:id',controller.deleteBanner)
-router.get('/delete-coupon/:id',controller.deleteCoupon)
-router.get('/order-details/:id',controller.order_details)
-router.get('/cancel-order/:id',controller.cancel_order)
-router.get('/admin-logout',controller.adminLogout)
-router.get('/invoice/:id',controller.invoice)
-
-
-router.post('/admin-login', controller.adminLogin)
-router.post('/add-product',verifyAdmin,uploadOptions.array("images",4),controller.addProducts)
-router.post('/add-category',uploadOptions.single('image'),controller.addCategory)
-router.post('/add-banner',uploadOptions.single('image'),controller.addBanner)
-router.post('/add-coupon',controller.addCoupon)
-router.post('/edit-product/:id',verifyAdmin, uploadOptions.array("images",4), controller.editProducts)
-router.post('/edit-category/:id',uploadOptions.single('image'),controller.editCategory)
-router.post('/edit-banner/:id',uploadOptions.single('image'),controller.editBanner)
-router.post('/edit-coupon/:id',controller.editCoupon)
-
-router.post('/delivery-status/:id',controller.deliveryStatus)
+router.get('/',adminLoginPage)
+router.get('/admin-panel',verifyAdmin, admin_panel )
+router.get('/admin-product',verifyAdmin,allProducts)
+router.get('/admin-user',verifyAdmin, allUsers)
+router.get('/admin-category',verifyAdmin,categoryPage)
+router.get('/admin-order',verifyAdmin,vieworder)
+router.get('/admin-coupon',verifyAdmin,couponPage)
+router.get('/admin-banner',verifyAdmin,bannerPage)
+router.get('/add-product',verifyAdmin, addProductsPage)
+router.get('/add-category',verifyAdmin,addCategoryPage)
+router.get('/add-banner',verifyAdmin,addBannerPage)
+router.get('/add-coupon',addCouponPage)
+router.get('/edit-product/:id',verifyAdmin, editProductsPage )
+router.get('/edit-category/:id',verifyAdmin,editCategoryPage)
+router.get('/edit-banner/:id',verifyAdmin,editBannerPage)
+router.get('/edit-coupon/:id',verifyAdmin,editCouponPage)
+router.get('/unlist-product/:id',verifyAdmin,unlistProduct)
+router.get('/list-product/:id',verifyAdmin,listProduct)
+router.get('/unlist-category/:id',verifyAdmin,unlistCategory)
+router.get('/list-category/:id',verifyAdmin,listCategory)
+router.get('/unlist-banner/:id',verifyAdmin,disableBanner)
+router.get('/list-banner/:id',verifyAdmin,enableBanner)
+router.get('/block-user/:id',verifyAdmin,blockUser)
+router.get('/unblock-user/:id',verifyAdmin,unblockUser)
+router.get('/delete-banner/:id',verifyAdmin,deleteBanner)
+router.get('/delete-coupon/:id',verifyAdmin,deleteCoupon)
+router.get('/order-details/:id',verifyAdmin,order_details)
+router.get('/cancel-order/:id',verifyAdmin,cancel_order)
+router.get('/invoice/:id',verifyAdmin,invoice)
+router.get('/report',verifyAdmin,report)
+router.get('/admin-logout',adminLogout)
 
 
 
 
+router.post('/admin-login', adminLogin)
+router.post('/add-product',verifyAdmin,uploadOptions.array("images",4),addProducts)
+router.post('/add-category',uploadOptions.single('image'),addCategory)
+router.post('/add-banner',uploadOptions.single('image'),addBanner)
+router.post('/add-coupon',addCoupon)
+router.post('/edit-product/:id',verifyAdmin, uploadOptions.array("images",4), editProducts)
+router.post('/edit-category/:id',uploadOptions.single('image'),editCategory)
+router.post('/edit-banner/:id',uploadOptions.single('image'),editBanner)
+router.post('/edit-coupon/:id',editCoupon)
+
+router.post('/delivery-status/:id',deliveryStatus)
+router.post('/report/sales',salesReport)
 
 
-router.get('/delete-product/:id',verifyAdmin, controller.deleteProducts)
-router.get('/delete-user/:id',verifyAdmin, controller.deleteUsers )
-router.get('/delete-category/:id',controller.deleteCategory)
+
+
+
+router.get('/delete-product/:id',verifyAdmin, deleteProducts)
+router.get('/delete-user/:id',verifyAdmin, deleteUsers )
+router.get('/delete-category/:id',deleteCategory)
  
 
 

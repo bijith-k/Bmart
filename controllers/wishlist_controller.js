@@ -1,16 +1,23 @@
 const wishlist = require('../models/wishlist')
 const admin_products = require('../models/admin_products')
-
+const createError = require("http-errors");
 
 const { ObjectId, LoggerLevel } = require('mongodb')
 
 module.exports = {
 
-  wishlistPage: async (req, res) => {
-    let userId = req.session.user._id
+  wishlistPage: async (req, res,next) => {
+    try {
+      let userId = req.session.user._id
+      let user = req.session.user
     let proWish = await wishlist.find({ user: ObjectId(userId) }).populate('products.item')
     console.log(proWish);
-    res.render('user/wishlist', { title: 'Wishlist', proWish })
+    res.render('user/wishlist', { title: 'Wishlist', proWish,user })
+    } catch (error) {
+      console.log(errpr);
+      next(createError(404));
+    }
+    
   },
 
   add_to_wishlist:async(req,res)=>{

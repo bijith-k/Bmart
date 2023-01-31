@@ -5,20 +5,28 @@ const admin_users = require('../models/admin_users')
 const cart = require('../models/cart')
 
 const { ObjectId, LoggerLevel } = require('mongodb')
-
+const createError = require("http-errors");
 
 
 module.exports = { 
 
   cartPage:  async (req, res) => {
-    let userId = req.session.user._id
+    try {
+      let userId = req.session.user._id
+    let user = req.session.user
     let prodList = await cart.find({ user: ObjectId(userId) }).populate('products.item')
     // console.log(prodList,"cartitems");
-    res.render('user/cart', { title: 'Cart', prodList })
+    res.render('user/cart', { title: 'Cart', prodList,user })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   },
 
   add_to_cart:async(req,res)=>{
-    console.log("api call");
+    try {
+      console.log("api call");
    let prodId=req.params.id
    let userId=req.session.user._id 
     let product=await admin_products.findOne({_id:prodId})
@@ -61,9 +69,15 @@ module.exports = {
     })
     
    }
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   },
   changeQuantity: async (req, res, next) => {
-    let totalPrice
+    try {
+      let totalPrice
     let productTotal
     let details = req.body
     // console.log(details,"cart");
@@ -97,11 +111,17 @@ module.exports = {
   
       res.json({ status: true, totalPrice, productTotal, q })
     }
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   }
   ,
 
   removeProduct: async (req, res) => {
-    console.log("sdfdsafas");
+    try {
+      console.log("sdfdsafas");
     let details = req.body
     let product = await admin_products.findOne({ _id: details.product })
     let cartData = await cart.findByIdAndUpdate({ _id: details.cart }, { $pull: { products: { item: details.product } }, $inc: { 'totalprice': -product.selling_price } })
@@ -111,6 +131,11 @@ module.exports = {
     if (cartData) {
       res.json({ removeProduct: true, totalPrice, productTotal })
     }
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
+    
   
   },
 

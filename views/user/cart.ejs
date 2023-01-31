@@ -6,15 +6,22 @@
         <div class="col-first">
           <h2 style="color: white;">Cart</h2>
           <nav class="d-flex align-items-center">
-            <a href="index.html">SHOP &#8594</span></a>
-            <a href="login.ejs">Products</a>
+            <a href="/categories">SHOP &#8594</span></a>
+            <a href="">Cart</a>
           </nav>
         </div>
       </div>
   </section>
 
   <section id="cart-container" class="container my-5">
-  
+    <% if (message) { %>
+      <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>
+          <%= message.message %>
+        </strong>
+      </div>
+      <% } %>
     <table width="100%">
       <% if(prodList[0] != null) { %>
       <thead>
@@ -67,9 +74,11 @@
           <% }) %>
       </tbody>
       <% } else { %>
-        <div style="display: flex; align-items: center;">
-          <h3>No products in cart</h3>  
-          <img src="/images/empty.png" style="width: 50%;" alt="">
+
+        <div class="row " style="display: flex; justify-content: center;">
+          <div class="col-12 col-md-6 m-5" style="width: 100%;"><h1 class="text-center text-danger"><b> Cart is empty</b></h1> </div>
+          <div class="col-12 col-md-6 mx-auto"  ><img src="/images/empty.png" style="width: 100%;" alt=""></div> 
+          
         </div>
       
       <% } %>
@@ -112,7 +121,7 @@
             <h6>Total</h6>
             <h6><span>$</span><span id="grandTotal<%= prodList[0]._id %>"><%= prodList[0].totalprice %></span></h6>
           </div>
-          <button class="ml-auto btn btn-success"><a href="/checkout" class="text-white">PROCEED TO CHECKOUT</a></button>
+          <button class="ml-auto btn btn-success"><a href="/checkout" class="text-white" disabled>PROCEED TO CHECKOUT</a></button>
         </div>
         <% }) %>
       </div>

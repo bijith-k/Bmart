@@ -13,7 +13,7 @@ const randomstring = require('randomstring')
 const Razorpay = require('razorpay')
 const { CLIENT_ID, APP_SECRET, KEY_ID, SECRET_KEY , mailId, password} = process.env;
 const ITEMS_PAGE = 6
-
+const createError = require("http-errors");
 var instance = new Razorpay({
   key_id: KEY_ID,
   key_secret: SECRET_KEY
@@ -76,6 +76,7 @@ module.exports = {
 
   homePage: async (req, res) => {
 
+    let user = req.session.user
     const categories = await Category.find()
     const banners = await Banner.find()
     const users = await admin_users.find()
@@ -85,7 +86,9 @@ module.exports = {
     //   let length = cartnum.products.length
     //   console.log(length,"dddsf");
     //  }
-    res.render('user/home', { title: 'Home', categories, banners, users })
+    
+     
+    res.render('user/home', { title: 'Home', categories, banners, users, user })
   },
 
   registrationPage: (req, res) => {
@@ -123,7 +126,7 @@ module.exports = {
           console.log('Message sent: %s', info.messageId);
           console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-          res.render('user/otp', { title: 'Verify otp' })
+          res.render('user/otp', { title: 'Verify otp' ,errorMessage: null})
         });
       }
     }).catch((err) => {
@@ -147,7 +150,7 @@ module.exports = {
         console.log('Message sent: %s', info.messageId);
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
   
-        res.render('user/otp', { title: 'Verify otp' })
+        res.render('user/otp', { title: 'Verify otp' ,errorMessage : null})
       });
     } catch (error) {
       console.log(error);
@@ -156,7 +159,7 @@ module.exports = {
    
   },
 
-  verifyOTP: (req, res) => {
+  verifyOTP: (req, res,next) => {
     if (req.body.otp == otp) {
 
       console.log('otp correct');
@@ -176,6 +179,7 @@ module.exports = {
           }
           req.session.userLoggedIn = true
           req.session.user = data
+           
           res.redirect('/')
         }).catch((err) => {
           // res.json({
@@ -200,8 +204,11 @@ module.exports = {
         type: 'danger',
         message: 'Entered otp is incorrect'
       }
+      res.locals.errorMessage = 'OTP is incorrect';
       req.session.userLoggedIn = false
-      res.render('user/otp', { title: 'verify OTP' })
+      var errorMessage = "OTP is incorrect";
+      res.render('user/otp', { title: 'verify OTP',errorMessage: errorMessage })
+      // res.redirect('/otp')
 
     }
   },
@@ -367,12 +374,13 @@ module.exports = {
   productListing: async (req, res) => {
     // console.log(req.query.category);
 try {
+  let user = req.session.user
   const query = req.query.category
   if (query) {
     try {
       const categories = await Category.find()
       const products = await admin_products.find({ category: query })
-      res.render('user/listing', { products, categories, title: 'categories' })
+      res.render('user/listing', { products, categories, title: 'categories',user })
     }
     catch (error) {
       console.log(error);
@@ -385,7 +393,7 @@ try {
       // let products = await admin_products.aggregate([{$match:{ $or: [{name: regex },{discription: regex}] }}])
       let products = await admin_products.find({ name: { $regex: key, $options: 'i' }, deleted: false })
       const categories = await Category.find()
-      res.render('user/listing', { products, categories, title: 'categories' })
+      res.render('user/listing', { products, categories, title: 'categories',user })
     } catch (err) {
       console.log(err);
     }
@@ -395,12 +403,12 @@ try {
       if (req.query.sort == "name") {
         let products = await admin_products.find().collation({ locale: "en" }).sort({ name: 1 })
         const categories = await Category.find()
-        res.render('user/listing', { products, categories, title: 'categories' })
+        res.render('user/listing', { products, categories, title: 'categories',user })
       }
       else if (req.query.sort = "price") {
         let products = await admin_products.find().sort({ selling_price: -1 }).collation({ locale: "en", numericOrdering: true })
         const categories = await Category.find()
-        res.render('user/listing', { products, categories, title: 'categories' })
+        res.render('user/listing', { products, categories, title: 'categories',user })
       }
 
     } catch (err) {
@@ -411,12 +419,12 @@ try {
     const page = req.query.page
     let products = await admin_products.find({ deleted: false }).skip((page - 1) * ITEMS_PAGE).limit(ITEMS_PAGE)
     const categories = await Category.find()
-    res.render('user/listing', { products, categories, title: 'categories' })
+    res.render('user/listing', { products, categories, title: 'categories',user })
   }
   else {
     const categories = await Category.find()
     const products = await admin_products.find()
-    res.render('user/listing', { products, categories, title: 'categories' })
+    res.render('user/listing', { products, categories, title: 'categories',user })
   }
 } catch (error) {
   console.log(error);
@@ -429,7 +437,7 @@ try {
   singleProduct: async (req, res) => {
     try {
       let id = req.params.id
-
+      let user = req.session.user
       admin_products.findById(id, (err, product) => {
         if (err) {
           console.log(err);
@@ -437,7 +445,7 @@ try {
           if (product == null) {
             res.redirect('/categories')
           } else {
-            res.render('user/single-product', { title: 'Product', product: product })
+            res.render('user/single-product', { title: 'Product', product: product,user })
           }
         }
       }).populate('category')
@@ -451,9 +459,10 @@ try {
 
   accountPage: async (req, res) => {
     try {
+      let user = req.session.user
       let id = req.session.user._id
       let userInfo = await admin_users.findById({ _id: id })
-      res.render('user/account', { title: 'Account', userInfo })
+      res.render('user/account', { title: 'Account', userInfo,user })
     } catch (error) {
       console.log(error);
       next(createError(404));
@@ -462,10 +471,11 @@ try {
   },
 
   addressPage: async (req, res) => {
+    let user = req.session.user
 
     let id = req.session.user._id
     let userInfo = await admin_users.findById({ _id: id })
-    res.render('user/address', { title: 'Address', userInfo })
+    res.render('user/address', { title: 'Address', userInfo,user })
   },
 
   addAddress: async (req, res) => {
@@ -574,8 +584,9 @@ try {
 
   settingsPage: async (req, res) => {
     let id = req.session.user._id
+    let user = req.session.user
     let userInfo = await admin_users.findById({ _id: id })
-    res.render('user/settings', { title: 'Settings', userInfo })
+    res.render('user/settings', { title: 'Settings', userInfo,user })
   },
 
   changePassword: async (req, res) => {
@@ -623,9 +634,21 @@ try {
 
   checkoutPage: async (req, res) => {
     let id = req.session.user._id
+    let user = req.session.user
     let userInfo = await admin_users.findById({ _id: id })
     let cartInfo = await cart.findOne({ user: id }).populate('products.item')
-    res.render('user/checkout', { title: 'Check out', userInfo, cartInfo })
+    cartInfo.products.forEach((product)=>{
+      if(product.item.stock_count < product.quantity){
+        req.session.message = {
+          type: 'danger',
+          message: 'One or more items in your cart is out of stock'
+        }
+        res.redirect('/cart')
+      }else{
+        res.render('user/checkout', { title: 'Check out', userInfo, cartInfo,user })
+      }
+    })
+   
   },
 
   applyCoupon: async (req, res) => {
@@ -767,7 +790,13 @@ try {
 
     }
 
-    console.log(order);
+    // console.log(order);
+
+    cartData.products.forEach(async(product)=>{
+      console.log("innn");
+       await admin_products.findByIdAndUpdate({_id:product.item},{$inc:{'product.$.item.stock_count':-product.quantity}})
+    })
+ 
 
     let selectAddress = await admin_users.findOne({ _id: order.userId }, { 'address': 1, _id: 0 }).exec()
     let addr = selectAddress.address[order['order-address']]
@@ -858,15 +887,17 @@ try {
 
 
   orderSuccessPage: (req, res) => {
-    res.render('user/order-success', { title: 'Order Success' })
+    let user = req.session.user
+    res.render('user/order-success', { title: 'Order Success',user })
   },
 
   orderPage: async (req, res) => {
     try {
+      let user = req.session.user
       let id = req.session.user._id
       let userInfo = await admin_users.findById({ _id: id })
       let orderInfo = await orders.find({ userId: id }).sort({ordered_date:-1})
-      res.render('user/orders', { title: 'Orders', userInfo, orderInfo })
+      res.render('user/orders', { title: 'Orders', userInfo, orderInfo,user })
     } catch (error) {
       console.log(error);
       next(createError(404));
@@ -877,11 +908,12 @@ try {
   orderProductsPage: async (req, res) => {
     try {
       let usersId = req.session.user._id
+      let user = req.session.user
       let ordId = req.params.id
       let userInfo = await admin_users.findById({ _id: usersId })
       let orderInfo = await orders.find({ userId: usersId, _id: ordId }).populate('products.item')
   
-      res.render('user/ordered_items', { title: 'Orders', userInfo, orderInfo })
+      res.render('user/ordered_items', { title: 'Orders', userInfo, orderInfo,user })
     } catch (error) {
       console.log(error);
       next(createError(404));

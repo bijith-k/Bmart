@@ -1,7 +1,7 @@
- 
- 
+  
 
 <%- include('../partials/user_header') %>
+
 
 
   <section class="head bg-dark" id="tophead" style=" padding-top: 3rem;  padding-bottom: 10px;">
@@ -39,15 +39,18 @@
   <div class="row" id="cathome" style="display: flex; justify-content: center;">
     <% categories.forEach((row,index) => { %>
       <% if(row.deleted == false){ %>
+       
     <div class="col-md-4 my-5" id="maincat"  >
+      <a href="/categories?category=<%= row._id %>">
       <div>
-        <h4 class="text-center fw-bold pt-5 text-capitalize"> <%= row.name %></h4>
-        <p class="text-center fw-normal"><%= row.description %></p>
+        <h4 class="text-center text-dark fw-bold pt-5 text-capitalize"> <%= row.name %></h4>
+        <p class="text-center text-dark fw-normal"><%= row.description %></p>
       </div>
     
       <img src="/uploads/<%= row.image %>" width="100%">
-      
+    </a>
     </div>
+  
     <% } %>
     <% }) %>
     <!-- <div class="col-md-4 my-5" id="maincat" >
@@ -280,4 +283,4 @@
 
   <%- include('../partials/user_footer') %>
 
- 
+  

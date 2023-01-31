@@ -4,10 +4,10 @@
     <div class="container p-5">
       <div class="head-banner d-flex flex-wrap align-items-center justify-content-end">
         <div class="col-first">
-          <h2 style="color: white;">Cart</h2>
+          <h2 style="color: white;">View Order</h2>
           <nav class="d-flex align-items-center">
-            <a href="index.html">SHOP &#8594</span></a>
-            <a href="login.ejs">Products</a>
+            <a href="/orders">Orders &#8594</span></a>
+            <a href="">View Order</a>
           </nav>
         </div>
       </div>
@@ -145,7 +145,7 @@
                       </div>
                    
                    <% orderInfo.forEach((order) => { %>
-                    <% if(order.order_status !="cancelled" ){ %>
+                    <% if(order.order_status !="cancelled" && order.delivery_status.delivered.state != true ){ %>
                    <div class="card p-3 bg-light my-2" style="border-radius: 0;" id=" item">
                     <h6 class="text-secondary border-bottom py-2 mb-2">Cancel Order</h6>
                     

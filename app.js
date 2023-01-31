@@ -13,7 +13,7 @@ const morgan = require('morgan')
 const adminRouter = require('./routes/admin')
 const userRouter = require('./routes/user')
 const { default: mongoose } = require('mongoose')
-
+const createError = require("http-errors");
 
 const app=express()
 const PORT=process.env.PORT||4000
@@ -72,6 +72,10 @@ app.use((req,res,next)=>{
   next()
 })
 
+ 
+
+
+
 
 app.use(expressLayouts)
 app.set('layout','./layout/layout')
@@ -87,26 +91,25 @@ app.use('/',userRouter)
 
 
  
-
+app.use(function(req, res, next) {
+  next(createError(404));
+});
  
 
 
 app.use( (err, req, res, next) => {
-  if (err instanceof ValidationError) {
-    // handle validation errors
-     
-    res.status(400).send({ error: 'Validation failed' });
-  } else if (err instanceof NotFoundError) {
-    // handle not found errors
-    res.status(404).render('errorPage',{title:"Page not found"})
-  } else if (err instanceof AuthenticationError) {
-    // handle authentication errors
-    res.status(401).send({ error: 'Unauthorized' });
-  } else {
-    // handle all other errors
-    console.error(err);
-    res.status(500).send({ error: 'Something went wrong' });
-  }
+  let errStatus = err.status || 500;
+  // render the error page
+  // console.log(err);
+  res.status(errStatus);
+  if(errStatus==404) {
+    // console.error(err);
+    res.render('errorPage',{title:"Page not found"})
+  }else{
+        res.send('<div style="font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif; text-align:center;"><h2 style="color:red;">500 |  Internal error detected!</h2> We will be back soon..</div>')
+        // res.render('error');
+        
+    }
 });
 
 

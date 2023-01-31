@@ -91,15 +91,23 @@
         ACCOUNT
       </a>
       <ul class="dropdown-menu dropdown-menu-dark bg-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+
+       
+        <% if(user) {  %>
         <li><a class="dropdown-item" href="/account">My Account</a></li>
-        <li><a class="dropdown-item" href="/user-signin">Login</a></li>
-        <li><a class="dropdown-item" href="/user-registration">Register</a></li>
         <li><a class="dropdown-item" href="/user-logout">Logout</a></li>
+        <% } else { %>
+          <li><a class="dropdown-item" href="/user-signin">Login</a></li>
+          <li><a class="dropdown-item" href="/user-registration">Register</a></li>
+        
+       <% } %>
+       
+         
       </ul>
     <!-- </li> -->
   </li>
   <li class="nav-item px-2 py-2 border-0">
-    <a class="nav-link" href="/error">CONTACT</a>
+    <a class="nav-link" href="/">CONTACT</a>
   </li>
     </ul>
   </div>

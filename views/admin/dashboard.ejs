@@ -199,10 +199,10 @@ var payMethodGraph = new Chart(ctx1, {
       label: 'Order Data',
       data: [ <%= paid %> , <%= paymentPending %> , <%= cancelledOrders %> , <%= pendingOrders %> ],
       backgroundColor: [
-      "#FAEBD7",
-          "#DCDCDC",
-          "#E9967A",
-          "#F5DEB3",
+      "rgba(21, 255, 0,.5)",
+          "rgba(227, 255, 45,.5)",
+          "rgba(255, 0, 0,.5)",
+          "rgb(184, 225, 23)",
       ],
       borderColor: [
       "#E9DAC6",
@@ -244,7 +244,13 @@ var payMethodGraph = new Chart(ctx1, {
     </script>
 
 <script>
-
+<%
+function getMonthName(monthNumber) {
+  const date = new Date();
+  date.setMonth(monthNumber - 1);
+  return date.toLocaleString('en-US', { month: 'long' });
+}
+%>
  
 <% let dates = salesChartDt.map((val)=>{ return val._id.slice(-2)}) %>
 <% let salesCount = salesChartDt.map((val)=>{ return val.count}) %>
@@ -256,7 +262,7 @@ var xValues = [<%= dates%>];
   const orderDatas = {
   labels: xValues,
   datasets: [{
-    label: 'Weekly Sales',
+    label: "Sales <%=getMonthName(Number(salesChartDt[0]._id.substring(7,5))) %> -  <%= salesChartDt[0]._id.substring(0, 4)%>",
     data:  [<%=salesCount %>],
     fill: false,
     borderColor: 'rgb(75, 192, 192)',

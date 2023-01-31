@@ -23,7 +23,7 @@ required:true,
     required:true,
   },
   stock_count:{
-    type:String,
+    type:Number,
     required:true,
   },
   images:[{
@@ -33,7 +33,6 @@ required:true,
   }],
   status:{
     type:String,
-    default:'in stock'
   },
   created: {
     type: Date,

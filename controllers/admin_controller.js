@@ -10,7 +10,7 @@ const banner = require('../models/admin_banner')
 const coupon = require('../models/admin_coupons')
 const orders = require('../models/admin_orders')
 const { ObjectId } = require('mongodb')
-
+const createError = require("http-errors");
 const Chart = require('chart.js');
 const { log } = require('console')
 const multerStorage = multer.memoryStorage();
@@ -145,7 +145,7 @@ module.exports = {
           status: "blocked"
         }
       }).then(() => {
-
+  
         res.redirect('/admin/admin-user')
       })
 
@@ -397,14 +397,19 @@ module.exports = {
             .toFormat('jpeg', { quality: 100 })
             .toFile(`public/uploads/${newFilename}`)
           images.push(newFilename)
-          console.log(newFilename);
+          
           resolve();
         }));
 
       })
-      console.log(images);
+      
       Promise.all(promises)
         .then(() => {
+          if(req.body.stock_count == 0){
+            prod_status = 'Out Of Stock'
+         }else{
+            prod_status = 'In Stock'
+         }
           const product = new admin_products({
             name: req.body.name,
             category: ObjectId(req.body.category),
@@ -412,6 +417,7 @@ module.exports = {
             selling_price: req.body.selling_price,
             listing_price: req.body.listing_price,
             stock_count: req.body.stock_count,
+            status:prod_status,
             images: images,
           })
           product.save((err) => {
@@ -576,6 +582,12 @@ module.exports = {
     try {
       let id = req.params.id
       let new_images = ''
+      if(req.body.stock_count == 0){
+         prod_status = 'Out Of Stock'
+      }else{
+         prod_status = 'In Stock'
+      }
+      
       let dataToUpload = {
         name: req.body.name,
         category: ObjectId(req.body.category),
@@ -583,6 +595,7 @@ module.exports = {
         selling_price: req.body.selling_price,
         listing_price: req.body.listing_price,
         stock_count: req.body.stock_count,
+        status: prod_status
       }
 
       if (req.files.length > 0) {
@@ -616,7 +629,12 @@ module.exports = {
 
       admin_products.findByIdAndUpdate({ _id: id }, dataToUpload, (err, result) => {
         if (err) {
-          res.json({ message: err.message, type: 'danger' })
+          // res.json({ message: err.message, type: 'dangerous' })
+          req.session.message = {
+            type: 'danger',
+            message: err.message
+          }
+          res.redirect('/admin/edit-product/'+id)
           console.log(err);
         } else {
           req.session.message = {
@@ -1105,6 +1123,40 @@ module.exports = {
     let orderId = req.params.id
     let orderInfo = await orders.findOne({ _id: orderId }).populate(['products.item', 'userId'])
     res.render('admin/invoice', { title: 'invoice', page: 'invoice', orderInfo })
+  },
+
+  report:async (req, res, next) => {
+    res.render('admin/report', { title: 'Report', page: 'Report' })
+  },
+  salesReport:async (req, res, next) => {
+    console.log('report');
+    try {
+      let salesData = await orders.aggregate([
+        {
+          $match: {
+            order_status: "placed",
+            $and: [
+              { ordered_date: { $gt: new Date(req.body.fromDate) } },
+              { ordered_date: { $lt: new Date(req.body.toDate) } },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            foreignField: "name",
+            localField: "_id",
+            from: "admin_users",
+            as: "userid",
+          },
+        },
+        { $sort: { ordered_date: -1 } },
+      ]);  
+      console.log(salesData,"innnn");
+      res.render('admin/salesReport', { title: 'Sales Report', page: 'Sales Report',salesData })
+    } catch (error) {
+      console.log(error);
+      next(createError(404));
+    }
   },
 
   adminLogout: (req, res, next) => {

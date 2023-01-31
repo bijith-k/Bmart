@@ -1,8 +1,16 @@
 <%- include('../partials/admin_headside') %>
 
 <section>
+  <% if (message) { %>
+    <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+      <strong><%= message.message %> </strong>
+    </div> 
+    <% } %>
   <div class="container mt-4">
+    
     <div class="row">
+      
       <div class="col-md-6  mx-4">
         <form action="/admin/edit-product/<%= product._id %>" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
           <label for="name">Enter product name</label>
@@ -23,11 +31,11 @@
             </select>
            
           <label for="lprice">Enter listing price</label>
-          <input type="text" name="listing_price" id="lp" value="<%= product.listing_price %>"  class="form-control" required>
+          <input type="number" name="listing_price" id="lp" value="<%= product.listing_price %>"  class="form-control" required>
           <label for="sprice">Enter selling price</label>
-          <input type="text" name="selling_price" id="sp" value="<%= product.selling_price %>"  class="form-control" required>
-          <label for="scount">Enter stock count</label>
-          <input type="text" name="stock_count" value="<%= product.stock_count %>"  class="form-control" required>
+          <input type="number" name="selling_price" id="sp" value="<%= product.selling_price %>"  class="form-control" required>
+          <label for="scount" >Enter stock count</label>
+          <input type="number"  id="amountInput" name="stock_count" value="<%= product.stock_count %>"  class="form-control" required>
           <label for="uploadimage">Upload images</label>
           <input type="file" name="images" id="file-input" class=" form-control" accept= 'image/*' multiple>
           <% for (let i=0; i< product.images.length;i++){ %>
@@ -35,6 +43,7 @@
           <% } %>
           <div class="previewImages"></div>
           <button type="submit" class="btn btn-primary mt-4" style="display:block;">Update Product</button>
+          
         </form>
       </div>
     </div>
@@ -71,4 +80,19 @@
 }
   
 
+
+
+    </script>
+
+    <script>
+      document.querySelector('form').addEventListener('submit', function (event) {
+    const amountInput = document.querySelector('#amountInput');
+    const selling_price = document.querySelector('#sp');
+    const listing_price = document.querySelector('#lp');
+    
+    if (amountInput.value < 0 || selling_price.value<0 || listing_price < 0 ) {
+      event.preventDefault();
+      alert("The stock count and price's should not be negative");
+    }
+  });
     </script>

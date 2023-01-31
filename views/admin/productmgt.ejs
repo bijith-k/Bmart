@@ -40,8 +40,21 @@
               <td class="text-capitalize"><%= row.category.name %></td>
               <td><%= row.selling_price %></td>
               <td><%= row.listing_price %></td>
+              
               <td><%= row.stock_count %></td>
-              <td><%= row.status %></td>
+              <td> <%
+                
+                if (row.stock_count !=0 ) {
+                  %>
+                  <span class="active " >In Stock</span>
+                  <%
+                } else {
+                  %>
+                  <span class="expired text-danger">Out of Stock</span>
+                  <%
+                }
+              %></td>
+              <!-- <td><%= row.status %></td> -->
               <td>
                 <a href="/admin/edit-product/<%= row._id %>" class="text-success"><button type="button" class="btn btn-info" style="width: 70px;">Edit</button></i></a>
 
