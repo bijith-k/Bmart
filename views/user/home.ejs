@@ -4,7 +4,7 @@
 
 
 
-  <section class="head bg-dark" id="tophead" style=" padding-top: 3rem;  padding-bottom: 10px;">
+  <section class="head bg-dark" id="tophead" style=" padding-top: 1px;  padding-bottom: 10px;">
     <div class="container">
       <% if (message) { %>
         <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
@@ -15,14 +15,19 @@
         </div>
         <% } %>
        
-          <div class="row">
+          <div class="row pt-1">
             <% banners.forEach((row,index) => { %>
               <% if(row.deleted == false){ %>
-            <div class="col-lg-6">
-              <h1 class="py-5" style=" color: rgb(255, 255, 255);"> <%= row.name %>
-              </h1>
-              <p class="py-3" style="color: rgba(139, 142, 153, 1); font-size: medium;"><%= row.description %></p>
-              <button class="btn btn-light  mb-3"  ><a href="/categories" class="text-dark" >SHOP NOW</a></button>
+            <div class="col-lg-6" style="display: flex; flex-direction: column; justify-content: space-around;">
+              <div style="width: 60%;">
+                <h1 class="pt-4" style=" color: rgb(255, 255, 255);"><b><%= row.name %></b> </h1>
+              </div>
+              
+              
+              <p class="" style="color: rgba(139, 142, 153, 1); font-size: medium;"><%= row.description %></p>
+              <div class="pb-4">
+                <button class="btn btn-light  mb-3"  ><a href="/categories" class="text-dark" >SHOP NOW</a></button>
+              </div>
             </div>
             <div class="col-lg-6">
               <img src="/uploads/<%= row.image %>" class="img-fluid" alt="homeimg">
@@ -73,17 +78,22 @@
 </section>
 
 
-  <!-- <section>
-    <div class="container my-5">
+  <section>
+    <div class="container my-5 p-4" style="border: 2px solid rgba(0, 0, 0, 0.331); ">
       
       <div class="row " style="display: flex; flex-wrap: wrap;   max-width: max-content;">
-        <h1 class="text-center">LATEST PRODUCTS</h1>
+        <h1 class="text-center pt-3"><b>LATEST PRODUCTS</b></h1>
+        <% products.forEach(product=> { %>
         <div class="col-lg-3" id="mainlist">
+          
           <div class="pro-img">
-           <a href="/categories"> <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;"></a>
+           <a href="/product/<%= product._id %>"> <img src="/uploads/<%= product.images[0] %>" style="width: 100%;"></a>
           </div>
           <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
+            <div style="height: 45px;">
+              <h6><%= product.name %></h6>
+            </div>
+           
              <div class="rating">
                   <span><i class="fa fa-star" ></i></span> 
                   <span><i class="fa fa-star" ></i></span> 
@@ -91,127 +101,13 @@
                   <span><i class="fa fa-star" ></i></span> 
                   <span><i class="fa fa-star" ></i></span> 
                  </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
+            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$<%= product.listing_price %></span><span>$<%= product.selling_price %></span></p>
           </div>
         </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3" id="mainlist">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="pro-img">
-            <img src="images/e1_1_acer-aspire 3 A315.jpg" style="width: 100%;">
-          </div>
-          <div class="pro-details text-center" style="display: grid; place-items: center;  ">
-            <h6>APPLE 2022 MacBook AIR M2 - (8 GB/256 GB SSD)</h6>
-             <div class="rating">
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                  <span><i class="fa fa-star" ></i></span> 
-                 </div>
-            <p style="font-weight: 600;"><span style="color: rgba(0, 0, 0, 0.505);  text-decoration: line-through; margin-right: 10px;">$1400.00</span><span>$1330.00</span></p>
-          </div>
-        </div>
-        
-
-        
+        <% }) %>
       </div>
     </div>
-  </section> -->
+  </section>
 
  
 
@@ -280,7 +176,146 @@
 
   </section> -->
 
+  <!-- <section class="brand-area section_gap">
+    <div class="container-fluid" style="background-color: rgba(222, 226, 230, 0.5);">
+<h5 class="text-center pt-4"><b>POPULAR BRANDS</b> </h5>
+   
+		<div class="container p-3" >
+			<div class="row">
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b1.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b2.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b3.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b4.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b5.png" alt="">
+				</a>
+         
+			</div>
+      <div class="row mt-5">
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b6.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b7.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/samsung.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/b8.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="/images/msi.png" alt="">
+				</a>
+         
+			</div>
+		</div>
+  </div>
+	</section> -->
+
+
+<div class="container">
+	<div class="row">
+    <h5 class="text-center pt-4"><b>POPULAR BRANDS</b> </h5>
+		<div class="col-md-12">
+			<div class="lc-block">
+				<div id="carouselLogos" class="carousel slide pt-5 pb-4 pointer-event" data-bs-ride="carousel">
+
+					<div class="carousel-inner px-5">
+						<div class="carousel-item active">
+							<div class="row">
+								<div class="col-6 col-lg-2 align-self-center">
+									<img class="d-block w-100 px-3 mb-3" src="/images/b1.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b2.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b3.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b4.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b5.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b6.png" alt="">
+								</div>
+							</div>
+
+						</div>
+						<div class="carousel-item">
+							<div class="row">
+								<div class="col-6 col-lg-2 align-self-center">
+									<img class="d-block w-100 px-3 mb-3" src="/images/b7.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b8.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/samsung.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/msi.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b1.png" alt="">
+								</div>
+								<div class="col-6 col-lg-2  align-self-center">
+									<img class="d-block w-100 px-3  mb-3" src="/images/b3.png" alt="">
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<!--
+	<ol class="carousel-indicators position-relative mt-3">
+		<li data-bs-target="#carouselLogos" data-bs-slide-to="0" class="active bg-dark carousel-control-prev-icon"></li>
+		<li data-bs-target="#carouselLogos" data-bs-slide-to="1" class="bg-dark"></li>
+	</ol>
+	-->
+
+					<div class="w-100 px-3 text-center mt-4">
+						<a class="carousel-control-prev position-relative d-inline me-4" href="#carouselLogos" data-bs-slide="prev">
+							<svg width="2em" height="2em" viewBox="0 0 16 16" class="text-dark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"></path>
+							</svg>
+							<span class="visually-hidden">Previous</span>
+						</a>
+						<a class="carousel-control-next position-relative d-inline" href="#carouselLogos" data-bs-slide="next">
+							<svg width="2em" height="2em" viewBox="0 0 16 16" class="text-dark" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"></path>
+							</svg>
+							<span class="visually-hidden">Next</span>
+						</a>
+
+
+
+
+
+					</div>
+
+
+				</div>
+			</div><!-- /lc-block -->
+		</div><!-- /col -->
+	</div>
+</div>
+
+  
+
 
   <%- include('../partials/user_footer') %>
 
-  
+   

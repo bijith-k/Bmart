@@ -1,7 +1,5 @@
 
-const Category = require('../models/admin_category')
 const admin_products = require('../models/admin_products')
-const admin_users = require('../models/admin_users')
 const cart = require('../models/cart')
 
 const { ObjectId, LoggerLevel } = require('mongodb')
@@ -10,23 +8,19 @@ const createError = require("http-errors");
 
 module.exports = { 
 
-  cartPage:  async (req, res) => {
+  cartPage:  async (req, res,next) => {
     try {
       let userId = req.session.user._id
     let user = req.session.user
     let prodList = await cart.find({ user: ObjectId(userId) }).populate('products.item')
-    // console.log(prodList,"cartitems");
     res.render('user/cart', { title: 'Cart', prodList,user })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-    
   },
 
-  add_to_cart:async(req,res)=>{
+  add_to_cart:async(req,res,next)=>{
     try {
-      console.log("api call");
    let prodId=req.params.id
    let userId=req.session.user._id 
     let product=await admin_products.findOne({_id:prodId})
@@ -35,9 +29,6 @@ module.exports = {
     quantity:1,
     price:product.selling_price
   }
-  // console.log(prodId,"id");
-  // console.log(prodObj,"obj");
-  
    let userCart= await cart.findOne({user:userId})
    if(userCart){
     let itemIndex = userCart.products.findIndex((p) => p.item == prodId);
@@ -48,7 +39,6 @@ module.exports = {
       if(cartD){
         res.json({status:true})
       }
-      // res.json({repeat:true})
     } else {
       //product does not exists in cart, add new item
       let cartD = await cart.updateOne({user:userId},{$push:{products:prodObj},$inc:{totalprice:product.selling_price}})
@@ -65,12 +55,9 @@ module.exports = {
     })
     cartObj.save().then(()=>{
       res.json({status:true})
-      // res.redirect('/categories')
     })
-    
    }
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
     
@@ -80,48 +67,37 @@ module.exports = {
       let totalPrice
     let productTotal
     let details = req.body
-    // console.log(details,"cart");
     let product = await admin_products.findOne({ _id: details.product })
     details.count = parseInt(details.count)
     details.quantity = parseInt(details.quantity)
     if (details.count == -1 && details.quantity == 1) {
   
       let cartData = await cart.findByIdAndUpdate({ _id: details.cart }, { $pull: { products: { item: details.product } }, $inc: { 'totalprice': product.selling_price * details.count } })
-  
-  
       totalPrice = cartData.totalprice
       productTotal = product.selling_price
   
-  
       if (cartData) {
         res.json({ removeProduct: true, totalPrice, productTotal })
-  
       }
     }
     else {
       let cartData = await cart.updateOne({ _id: details.cart, "products.item": details.product }, { $inc: { 'products.$.quantity': details.count, 'products.$.price': product.selling_price * details.count, 'totalprice': product.selling_price * details.count } })
-  
       let cartDetails = await cart.findOne({ _id: details.cart })
-  
       let itemIndex = cartDetails.products.findIndex((p) => p.item == details.product)
       let q = cartDetails.products[itemIndex].quantity
   
       totalPrice = cartDetails.totalprice
       productTotal = product.selling_price
-  
       res.json({ status: true, totalPrice, productTotal, q })
     }
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-    
   }
   ,
 
-  removeProduct: async (req, res) => {
+  removeProduct: async (req, res,next) => {
     try {
-      console.log("sdfdsafas");
     let details = req.body
     let product = await admin_products.findOne({ _id: details.product })
     let cartData = await cart.findByIdAndUpdate({ _id: details.cart }, { $pull: { products: { item: details.product } }, $inc: { 'totalprice': -product.selling_price } })
@@ -132,13 +108,7 @@ module.exports = {
       res.json({ removeProduct: true, totalPrice, productTotal })
     }
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-    
-  
   },
-
- 
-
 }

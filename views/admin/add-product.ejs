@@ -70,7 +70,8 @@ function validateForm() {
   var firstInput = parseFloat(document.getElementById("lp").value)
   var secondInput = parseFloat(document.getElementById("sp").value)
   if (firstInput <= secondInput) {
-    alert("Selling price must be less than listing price");
+    
+    Swal.fire("Selling price must be less than listing price")
     return false;
   }
   return true;
@@ -86,7 +87,8 @@ const listing_price = document.querySelector('#lp');
 
 if (amountInput.value < 0 || selling_price.value<0 || listing_price < 0 ) {
   event.preventDefault();
-  alert("The stock count and price's should not be negative");
+ 
+  Swal.fire("The stock count and price's should not be negative")
 }
 });
 </script>

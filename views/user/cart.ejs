@@ -13,6 +13,9 @@
       </div>
   </section>
 
+
+
+  
   <section id="cart-container" class="container my-5">
     <% if (message) { %>
       <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
@@ -22,73 +25,83 @@
         </strong>
       </div>
       <% } %>
-    <table width="100%">
-      <% if(prodList[0] != null) { %>
-      <thead>
-        <tr>
-          <td>IMAGE</td>
-          <td>PRODUCT</td>
-          <td>PRICE</td>
-          <td>QUANTITY</td>
-          <td>TOTAL</td>
-          <td>ACTION</td>
-        </tr>
-      </thead>
 
-      <tbody>
-        <% prodList[0].products.forEach(product=>{ %>
-          <tr id="<%= product.item._id %>item">
 
-            <td><img src="/uploads/<%= product.item.images[0] %>" alt=""></td>
-            <td>
-              <h6>
-                <%= product.item.name %>
-              </h6>
-            </td>
-            <td>
-              <h6><span>$</span><span>
-                  <%= product.item.selling_price %>
-                </span></h6>
-            </td>
-            <!-- <td><input class="w-25 pl-1" value="1" type="number"></td> -->
-            <td>
-              <button class="cart-item-count"
-                onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',-1)"
-                style="margin-right: 10px; background-color: black; color: white;">-</button>
-              <span id="<%= product.item._id %>">
-                <%= product.quantity %>
-              </span>
-              <button class="cart-item-count"
-                onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',1)"
-                style="margin-left: 10px; background-color: black; color: white;">+</button>
-            </td>
-            <td>
-              <h6><span>$</span><span id="total<%= product.item._id %>">
-                  <%= product.price %>
-                </span></h6>
-            </td>
-            <!-- <td><a href="/remove-product"><i class="fas fa-trash"></i></a></td> -->
-            <td><button id="Remove" class="btn btn-danger"
-                onclick="removeProduct('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>')">Remove</button></td>
-          </tr>
-          <% }) %>
-      </tbody>
-      <% } else { %>
 
-        <div class="row " style="display: flex; justify-content: center;">
-          <div class="col-12 col-md-6 m-5" style="width: 100%;"><h1 class="text-center text-danger"><b> Cart is empty</b></h1> </div>
-          <div class="col-12 col-md-6 mx-auto"  ><img src="/images/empty.png" style="width: 100%;" alt=""></div> 
-          
-        </div>
-      
-      <% } %>
-    </table>
-    
+      <% if(prodList[0] !=null && prodList[0].products.length !=0 ) { %>
+         
+        <table width="100%">
+         
+            <thead>
+              <tr>
+                <td>IMAGE</td>
+                <td>PRODUCT</td>
+                <td>PRICE</td>
+                <td>QUANTITY</td>
+                <td>TOTAL</td>
+                <td>ACTION</td>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% prodList[0].products.forEach(product=>{ %>
+                <tr id="<%= product.item._id %>item">
+
+                  <td><img src="/uploads/<%= product.item.images[0] %>" alt=""></td>
+                  <td>
+                    <h6>
+                      <%= product.item.name %>
+                    </h6>
+                  </td>
+                  <td>
+                    <h6><span>$</span><span>
+                        <%= product.item.selling_price %>
+                      </span></h6>
+                  </td>
+                  <!-- <td><input class="w-25 pl-1" value="1" type="number"></td> -->
+                  <td>
+                    <button class="cart-item-count"
+                      onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',-1)"
+                      style="margin-right: 10px; background-color: black; color: white;">-</button>
+                    <span id="<%= product.item._id %>">
+                      <%= product.quantity %>
+                    </span>
+                    <button class="cart-item-count"
+                      onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',1)"
+                      style="margin-left: 10px; background-color: black; color: white;">+</button>
+                  </td>
+                  <td>
+                    <h6><span>$</span><span id="total<%= product.item._id %>">
+                        <%= product.price %>
+                      </span></h6>
+                  </td>
+                  <!-- <td><a href="/remove-product"><i class="fas fa-trash"></i></a></td> -->
+                  <td><button id="Remove" class="btn btn-danger"
+                      onclick="removeProduct('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>')">Remove</button>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+           
+        </table>
+         
+        
+        <% } else { %>
+
+          <div class="row " style="display: flex; justify-content: center;">
+            <div class="col-12 col-md-6 m-3" style="width: 100%;">
+              <h1 class="text-center text-danger"><b> Cart is empty</b></h1>
+            </div>
+            <div class="col-12 col-md-6 mx-auto"><img src="/images/empty.png" style="width: 100%;" alt=""></div>
+
+          </div>
+
+          <% } %>
   </section>
 
 
   <section id="cart-bottom" class="container my-5">
-   
+
     <div class="row  " style="display: flex;
     justify-content: flex-end;">
       <!-- <div class="coupon col-lg-6 col-md-6 col-12 mb-4">
@@ -100,15 +113,17 @@
           <button>APPLY COUPON</button>
         </div>
       </div> -->
-      <div class="total col-lg-6 col-md-6 col-12  "   >
+      <% if(prodList[0] !=null && prodList[0].products.length !=0 ) { %>
+         
+      <div class="total col-lg-6 col-md-6 col-12  ">
         <% prodList.forEach(product=>{ %>
-        <div>
-          <h5>CART TOTAL</h5>
-          <!-- <div class="d-flex justify-content-between">
+          <div>
+            <h5>CART TOTAL</h5>
+            <!-- <div class="d-flex justify-content-between">
             <h6>Subtotal</h6>
             <h6><span>$</span><span id="grandTotal<%= prodList[0].user %>"><%= prodList[0].totalprice %></span></h6>
           </div> -->
-          <!-- <div class="d-flex justify-content-between">
+            <!-- <div class="d-flex justify-content-between">
             <h6>Coupon Discount</h6>
             <h6><span>$</span><span>0</span></h6>
           </div>
@@ -116,23 +131,29 @@
             <h6>Shipping</h6>
             <h6><span>$</span><span>0</span></h6>
           </div> -->
-          <!-- <hr class="second-hr"> -->
-          <div class="d-flex justify-content-between">
-            <h6>Total</h6>
-            <h6><span>$</span><span id="grandTotal<%= prodList[0]._id %>"><%= prodList[0].totalprice %></span></h6>
+            <!-- <hr class="second-hr"> -->
+            <div class="d-flex justify-content-between">
+              <h6>Total</h6>
+              <h6><span>$</span><span id="grandTotal<%= prodList[0]._id %>" class="total-price">
+                  <%= prodList[0].totalprice %>
+                </span></h6>
+            </div>
+            <button class="ml-auto btn btn-success" id="proceed" onclick="" disabled><a href="/checkout" class="text-white">PROCEED
+                TO
+                CHECKOUT</a></button>
           </div>
-          <button class="ml-auto btn btn-success"><a href="/checkout" class="text-white" disabled>PROCEED TO CHECKOUT</a></button>
-        </div>
-        <% }) %>
+          <% }) %>
       </div>
+       
+      <% } %>
     </div>
-   
+
   </section>
 
   <%- include('../partials/user_footer') %>
 
     <script>
-      function changeQuantity(cartId, proId,userId, count) {
+      function changeQuantity(cartId, proId, userId, count) {
         let quantity = parseInt(document.getElementById(proId).innerHTML)
         count = parseInt(count)
         $.ajax({
@@ -140,21 +161,21 @@
           data: {
             cart: cartId,
             product: proId,
-            user:userId,
+            user: userId,
             count: count,
             quantity: quantity
           },
           method: 'post',
           success: (response) => {
             if (response.removeProduct) {
-              
+
               Swal.fire(
                 'Removed!',
                 'Product removed from cart',
                 'warning'
               )
-              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)-parseInt(response.productTotal)
-              $('#'+proId+'item').remove()
+              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice) - parseInt(response.productTotal)
+              $('#' + proId + 'item').remove()
 
             } else {
               document.getElementById(proId).innerHTML = quantity + count
@@ -162,7 +183,7 @@
               document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)
               // document.getElementById('bill' + userId).innerHTML = parseInt(response.totalPrice)
 
-              
+
               // location.reload()
             }
           }
@@ -171,7 +192,7 @@
 
       function removeProduct(cartId, proId) {
         $.ajax({
-          url: '/remove-product/'+proId,
+          url: '/remove-product/' + proId,
           data: {
             product: proId,
             cart: cartId
@@ -183,12 +204,12 @@
                 'Removed!',
                 'Product removed from cart',
                 'success'
-              ) 
+              )
 
-              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)-parseInt(response.productTotal)
-              $('#'+proId+'item').remove()
-              
-              
+              document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice) - parseInt(response.productTotal)
+              $('#' + proId + 'item').remove()
+
+
             } else {
               document.getElementById(proId).innerHTML = response.removeProduct
             }
@@ -197,4 +218,18 @@
       }
 
     </script>
- 
+
+    <script>
+      $(document).ready(function () {
+        var totalPrice = $('.total-price').text();
+
+        if (parseFloat(totalPrice) > 0) {
+
+          $('#proceed').prop('disabled', false);
+        } else {
+
+          $('#proceed').prop('disabled', true);
+        }
+      });
+
+    </script>

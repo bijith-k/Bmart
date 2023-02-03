@@ -12,40 +12,25 @@ const orders = require('../models/admin_orders')
 const { ObjectId } = require('mongodb')
 const createError = require("http-errors");
 const Chart = require('chart.js');
-const { log } = require('console')
-const multerStorage = multer.memoryStorage();
-
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true)
-  } else {
-    cb('Upload only images', false)
-  }
-}
-
-const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
-
-//image uploading
-
-const uploadFiles = upload.array('images', 4)
 
 module.exports = {
 
   adminLoginPage: (req, res, next) => {
-    if (!req.session.adminLoggedIn) {
-      res.render('admin/login', { title: 'Admin Login' })
-    }
-    else {
-      res.redirect('admin/admin-panel')
+    try {
+      if (!req.session.adminLoggedIn) {
+        res.render('admin/login', { title: 'Admin Login' })
+      }
+      else {
+        res.redirect('admin/admin-panel')
+      }
+    } catch (error) {
+      next(createError(404));
     }
   },
 
   adminLogin: (req, res, next) => {
-    // console.log(req.body.email);
-    // console.log(req.body.password);
     try {
       let { email, password } = req.body
-
       admin_details.find({ email }).then((data) => {
         if (data.length) {
           const hashedPassword = data[0].password
@@ -56,9 +41,7 @@ module.exports = {
                 type: 'success',
                 message: 'Login Successful'
               }
-
               res.redirect('admin-panel')
-
             } else {
               req.session.adminLoggedIn = false
               req.session.message = {
@@ -77,7 +60,6 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
 
@@ -90,35 +72,21 @@ module.exports = {
       const categories = await Category.find({})
       const users = await admin_users.find({})
       const order = await orders.find({ order_status: "placed" }).populate('userId').sort({ ordered_date: -1 }).limit(5)
-      const codNum = (await orders.find({ order_status: { "$ne": "cancelled" }, 'payment.pay_method': "COD" })).length
-      const onlineNum = (await orders.find({ order_status: { "$ne": "cancelled" }, 'payment.pay_method': "ONLINE" })).length
+      const codNum = (await orders.find({ order_status: "placed", 'payment.pay_method': "COD" })).length
+      const onlineNum = (await orders.find({ order_status: "placed", 'payment.pay_method': "ONLINE" })).length
 
       let cancelledOrders = (await orders.find({ order_status: "cancelled" })).length
       let pendingOrders = (await orders.find({ order_status: "pending" })).length
       let paymentPending = (await orders.find({ order_status: { "$ne": "cancelled" }, 'payment.pay_status': "pending" })).length
       let paid = (await orders.find({ 'payment.pay_status': "success" })).length
 
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
-
-      const endOfMonth = new Date();
-      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-      endOfMonth.setDate(0);
-      endOfMonth.setHours(23, 59, 59, 999);
-
       let salesChartDt = await orders.aggregate([
         {
-          $match: {
-            ordered_date: {
-              $gte: startOfMonth,
-              $lt: endOfMonth,
-            },
-          },
+          $match: { order_status: 'placed' }
         },
         {
           $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$ordered_date" } },
+            _id: { day: { $dayOfWeek: "$ordered_date" } },
             count: { $sum: 1 },
           },
         },
@@ -126,15 +94,24 @@ module.exports = {
           $sort: { _id: 1 },
         },
       ]);
-
-      // console.log(salesChartDt);
-
-      res.render('admin/dashboard', { title: 'Admin Panel', page: 'Dashboard', salesData, products, categories, users, order, codNum, onlineNum, cancelledOrders, pendingOrders, paymentPending, paid, salesChartDt })
+      let SalesCount = []
+      for(let i =1 ; i< 8 ;i++){
+        let found = false
+        for(let j=0;j< salesChartDt.length;j++){
+          if(salesChartDt[j]._id.day == i){
+            SalesCount.push({_id:{day:i},count:salesChartDt[j].count})
+            found = true
+            break;
+          }
+        }
+        if(!found){
+          SalesCount.push({_id:{day:i},count:0})
+        }
+      }
+      res.render('admin/dashboard', { title: 'Admin Panel', page: 'Dashboard', salesData, products, categories, users, order, codNum, onlineNum, cancelledOrders, pendingOrders, paymentPending, paid,  SalesCount })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   blockUser: async (req, res, next) => {
@@ -145,14 +122,8 @@ module.exports = {
           status: "blocked"
         }
       }).then(() => {
-  
         res.redirect('/admin/admin-user')
       })
-
-
-
-
-
     } catch (error) {
       console.log(error);
       next(createError(404));
@@ -170,42 +141,41 @@ module.exports = {
         res.redirect('/admin/admin-user')
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
   },
 
   categoryPage: (req, res, next) => {
-    Category.find().exec((err, categories) => {
-      if (err) {
-        res.json({ message: err.message })
-      } else {
-        res.render('admin/categorymgt', {
-          title: 'Category',
-          page: 'Category',
-          categories: categories,
-        })
-      }
-    })
+    try {
+      Category.find().exec((error, categories) => {
+          res.render('admin/categorymgt', {
+            title: 'Category',
+            page: 'Category',
+            categories: categories,
+          })
+      })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addCategoryPage: (req, res) => {
-    res.render('admin/add-category', { title: 'Add category', page: 'Add category' })
+    try {
+      res.render('admin/add-category', { title: 'Add category', page: 'Add category' })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addCategory: async (req, res, next) => {
-    //  console.log(req.body.name);
-
     try {
       const category = new Category({
         name: req.body.name,
         image: req.file.filename,
         description: req.body.description
       })
-
       category.save((err, category) => {
         if (err) {
-          // res.json({ message: err.message, type: "danger" })
           req.session.message = {
             type: 'danger',
             message: 'Category with same name is already present'
@@ -220,14 +190,13 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   editCategoryPage: (req, res, next) => {
-    let id = req.params.id
+    try {
+      let id = req.params.id
     Category.findById(id, (err, categories) => {
       if (err) {
         res.redirect('admin/admin-category')
@@ -239,6 +208,9 @@ module.exports = {
         }
       }
     })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   editCategory: (req, res, next) => {
@@ -247,11 +219,7 @@ module.exports = {
       let new_img = ''
       if (req.file) {
         new_img = req.file.filename
-        try {
           fs.unlinkSync('./public/uploads/' + req.body.old_img)
-        } catch (err) {
-          console.log(err);
-        }
       } else {
         new_img = req.body.old_img
       }
@@ -261,14 +229,11 @@ module.exports = {
         description: req.body.description
       }, (err, result) => {
         if (err) {
-
-          // res.json({ message: err.message, type: 'danger' })
           req.session.message = {
             type: 'danger',
             message: 'Category with same name is already present'
           }
           res.redirect('/admin/admin-category')
-
         } else {
           req.session.message = {
             type: 'success',
@@ -278,25 +243,8 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
-  },
-
-  deleteCategory: (req, res, next) => {
-    let id = req.params.id
-    Category.findByIdAndRemove(id, (err, result) => {
-      if (err) {
-        res.json({ message: err.message })
-      } else {
-        req.session.message = {
-          type: 'success',
-          message: 'Category deleted successfully'
-        }
-        res.redirect('/admin/admin-category')
-      }
-    })
   },
 
   unlistCategory: (req, res, next) => {
@@ -309,8 +257,7 @@ module.exports = {
       }).then(() => {
         res.redirect('/admin/admin-category')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
   },
@@ -325,66 +272,31 @@ module.exports = {
       }).then(() => {
         res.redirect('/admin/admin-category')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
-  }
-  ,
+  },
+
   allProducts: (req, res, next) => {
-    admin_products.find().populate("category").exec((err, product) => {
-      if (err) {
-        res.json({ message: err.message })
-      } else {
-
+    try {
+      admin_products.find().populate("category").exec((err, product) => {
         res.render('admin/productmgt', { title: 'Admin Panel', page: 'Products', product: product, })
-      }
-    })
+       })
+    } catch (error) {
+      next(createError(404));
+    }
   },
+
   addProductsPage: async (req, res, next) => {
-    const categories = await Category.find()
-
-    res.render('admin/add-product', { title: 'Add Product', page: 'Add Product', categories })
+    try {
+      const categories = await Category.find()
+      res.render('admin/add-product', { title: 'Add Product', page: 'Add Product', categories })
+    } catch (error) {
+      next(createError(404));
+    }
   },
-  // addProducts: (req, res) => {
-  //   req.files.forEach(function (file) {
-  //     sharp(file.path)
-  //     .resize({ width: 300, height: 300 })
-  //       .toFile(file.path + '-cropped.jpg')
-  //       .then(function (data) {
-  //         console.log('Image cropped');
-  //         const product = new admin_products({
-  //           name: req.body.name,
-  //           category: req.body.category._id,
-  //           description: req.body.description,
-  //           selling_price: req.body.selling_price,
-  //           listing_price: req.body.listing_price,
-  //           stock_count: req.body.stock_count,
-  //           images: data,
-  //         })
-  //         product.save((err) => {
-  //           if (err) {
-  //             res.json({ message: err.message, type: "danger" })
-  //           } else {
-  //             req.session.message = {
-  //               type: 'success',
-  //               message: 'Product added successfully'
-  //             }
-  //             res.redirect('/admin/admin-product')
-  //           }
-  //         })
-  //       })
-  //       .catch(function (err) {
-  //         console.error(err);
-  //       });
-  //   });
-  //   // const filenames = req.files.map(file => file.filename);
 
-  // }
-  // ,
-
-  addProducts: (req, res, next) => {
-    //const filenames = req.files.map(file => file.filename);
+   addProducts: (req, res, next) => {
     try {
       let images = []
       let promises = [];
@@ -397,19 +309,16 @@ module.exports = {
             .toFormat('jpeg', { quality: 100 })
             .toFile(`public/uploads/${newFilename}`)
           images.push(newFilename)
-          
           resolve();
         }));
-
       })
-      
       Promise.all(promises)
         .then(() => {
-          if(req.body.stock_count == 0){
+          if (req.body.stock_count == 0) {
             prod_status = 'Out Of Stock'
-         }else{
+          } else {
             prod_status = 'In Stock'
-         }
+          }
           const product = new admin_products({
             name: req.body.name,
             category: ObjectId(req.body.category),
@@ -417,12 +326,16 @@ module.exports = {
             selling_price: req.body.selling_price,
             listing_price: req.body.listing_price,
             stock_count: req.body.stock_count,
-            status:prod_status,
+            status: prod_status,
             images: images,
           })
           product.save((err) => {
             if (err) {
-              res.json({ message: err.message, type: "danger" })
+              req.session.message = {
+                type: 'danger',
+                message: 'Error occured while adding product'
+              }
+              res.redirect('/admin/admin-product')
             } else {
               req.session.message = {
                 type: 'success',
@@ -433,138 +346,13 @@ module.exports = {
           })
         })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
-  // addProducts: (req, res) => {
-  //   const filenames = req.files.map(file => file.filename);
-  //   const product = new admin_products({
-  //     name: req.body.name,
-  //     category: req.body.category,
-  //     description: req.body.description,
-  //     selling_price: req.body.selling_price,
-  //     listing_price: req.body.listing_price,
-  //     stock_count: req.body.stock_count,
-  //     images: filenames,
-  //   })
-  //   product.save((err) => {
-  //     if (err) {
-  //       res.json({ message: err.message, type: "danger" })
-  //     } else {
-  //       req.session.message = {
-  //         type: 'success',
-  //         message: 'Product added successfully'
-  //       }
-  //       res.redirect('/admin/admin-product')
-  //     }
-  //   })
-  // },
-
-
-  uploadImages: (req, res, next) => {
-    uploadFiles(req, res, (err) => {
-      if (err instanceof multer.MulterError) {
-        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-          return res.send('Too many files to upload !')
-        }
-      } else if (err) {
-        res.send(err)
-      }
-    })
-    console.log('upload');
-    next()
-  },
-
-  //resizing
-
-  resizeImages: async (req, res, next) => {
-    if (!req.files) return next()
-
-    req.body.images = []
-    await Promise.all(
-      req.files.map(async (file) => {
-        const filename = file.originalname.replace(/\..+$/, '')
-        const newFilename = `bmart-${filename}-${Date.now()}.jpeg`
-
-        await sharp(file.buffer)
-          .extract({ width: 800, height: 800 })
-          .jpeg({ quality: 100 })
-          .toFile(`uploads/${newFilename}`)
-        req.body.images.push(newFilename)
-      })
-    )
-    console.log('resize');
-    next()
-  },
-
-  getResultImages: (req, res, next) => {
-    if (req.body.images.length <= 0) {
-
-      return res.send(`You must select at least 1 image !`);
-    }
-
-    const images = req.body.images.map((image) => { ' ' + image + ' ' }).join(', ')
-
-    const product = new admin_products({
-      name: req.body.name,
-      category: req.body.category,
-      description: req.body.description,
-      selling_price: req.body.selling_price,
-      listing_price: req.body.listing_price,
-      stock_count: req.body.stock_count,
-      images: images,
-    })
-    console.log(product);
-    product.save((err) => {
-      if (err) {
-        res.json({ message: err.message, type: "danger" })
-      } else {
-        req.session.message = {
-          type: 'success',
-          message: 'Product added successfully'
-        }
-        res.redirect('/admin/admin-product')
-      }
-    })
-    console.log('result');
-  }
-  ,
-  deleteProducts: (req, res, next) => {
-
+  editProductsPage: async (req, res, next) => {
     try {
       let id = req.params.id
-      admin_products.findByIdAndRemove(id, (err, result) => {
-        if (result.images != '') {
-          try {
-            for (let i = 0; i < result.images.length; i++) {
-              fs.unlinkSync('./public/uploads/' + result.images[i])
-            }
-
-          } catch (err) {
-            console.log(err);
-          }
-        }
-        if (err) {
-          res.json({ message: err.message })
-        } else {
-          req.session.message = {
-            type: 'success',
-            message: 'Product deleted successfully'
-          }
-          res.redirect('/admin/admin-product')
-        }
-      })
-    } catch (error) {
-      console.log(error);
-      next(createError(404));
-    }
-
-  },
-  editProductsPage: async (req, res, next) => {
-    let id = req.params.id
     const categories = await Category.find()
     admin_products.findById(id, (err, product) => {
       if (err) {
@@ -577,17 +365,20 @@ module.exports = {
         }
       }
     }).populate("category")
+    } catch (error) {
+      next(createError(404));
+    }
   },
+
   editProducts: (req, res) => {
     try {
       let id = req.params.id
-      let new_images = ''
-      if(req.body.stock_count == 0){
-         prod_status = 'Out Of Stock'
-      }else{
-         prod_status = 'In Stock'
+      if (req.body.stock_count == 0) {
+        prod_status = 'Out Of Stock'
+      } else {
+        prod_status = 'In Stock'
       }
-      
+
       let dataToUpload = {
         name: req.body.name,
         category: ObjectId(req.body.category),
@@ -599,9 +390,6 @@ module.exports = {
       }
 
       if (req.files.length > 0) {
-        // new_images = req.files.map(file => file.filename);
-        // dataToUpload.images = new_images
-        console.log("in");
         let new_images = []
         let promises = [];
         req.files.forEach((file) => {
@@ -616,26 +404,19 @@ module.exports = {
               })
               .toFile(`public/uploads/${newFilename}`)
             new_images.push(newFilename)
-            // console.log(newFilename);
             resolve();
           }));
-
         })
-        // console.log(new_images);
-
         dataToUpload.images = new_images
-
       }
 
       admin_products.findByIdAndUpdate({ _id: id }, dataToUpload, (err, result) => {
         if (err) {
-          // res.json({ message: err.message, type: 'dangerous' })
           req.session.message = {
             type: 'danger',
-            message: err.message
+            message: 'Error while updating'+err.message
           }
-          res.redirect('/admin/edit-product/'+id)
-          console.log(err);
+          res.redirect('/admin/edit-product/' + id)
         } else {
           req.session.message = {
             type: 'success',
@@ -645,12 +426,9 @@ module.exports = {
         }
       }).populate("category")
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
-  }
-  ,
+  },
 
   unlistProduct: (req, res, next) => {
     try {
@@ -663,7 +441,6 @@ module.exports = {
         res.redirect('/admin/admin-product')
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
   },
@@ -678,129 +455,40 @@ module.exports = {
       }).then(() => {
         res.redirect('/admin/admin-product')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
-  }
-  ,
+  },
+
   allUsers: (req, res, next) => {
-
-    admin_users.find().exec((err, users) => {
-      if (err) {
-        res.json({ message: err.message })
-      } else {
-        res.render('admin/usermgt', {
-          title: 'Admin Panel',
-          page: 'Users',
-          users: users,
-        })
-      }
-    })
-  },
-
-  addUsersPage: (req, res, next) => {
-    res.render('admin/add_user', { title: 'Add User', page: 'Add user' })
-  },
-
-  addUsers: (req, res, next) => {
-    const user = new admin_users({
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      password: req.body.password
-    })
-    user.save((err) => {
-      if (err) {
-        res.json({ message: err.message, type: "danger" })
-      } else {
-        req.session.message = {
-          type: 'success',
-          message: 'User added successfully'
-        }
-        res.redirect('/admin/admin-user')
-      }
-    })
-  },
-
-  deleteUsers: (req, res, next) => {
-    let id = req.params.id
-    admin_users.findByIdAndRemove(id, (err, result) => {
-      if (result.image != '') {
-        try {
-          fs.unlinkSync('./public/uploads/' + result.image)
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      if (err) {
-        res.json({ message: err.message })
-      } else {
-        req.session.message = {
-          type: 'success',
-          message: 'User deleted successfully'
-        }
-        res.redirect('/admin/admin-user')
-      }
-    })
-  },
-
-  editUsersPage: (req, res, next) => {
-    let id = req.params.id
-    admin_users.findById(id, (err, user) => {
-      if (err) {
-        res.redirect('admin/admin-user')
-      } else {
-        if (user == null) {
-          res.redirect('admin/admin-user')
-        } else {
-          res.render('admin/edit_user', { title: 'Edit user', page: 'Edit user', user: user, })
-        }
-      }
-    })
-  },
-
-  editUsers: (req, res, next) => {
-    let id = req.params.id
-    let new_image = ''
-    if (req.file) {
-      new_image = req.file.filename
-      try {
-        fs.unlinkSync('./public/uploads/' + req.body.old_image)
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      new_image = req.body.old_image
+    try {
+      admin_users.find().exec((error, users) => {
+          res.render('admin/usermgt', {
+            title: 'Admin Panel',
+            page: 'Users',
+            users: users,
+          })
+      })
+    } catch (error) {
+      next(createError(404));
     }
-
-    admin_users.findByIdAndUpdate(id, {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      image: new_image,
-    }, (err, result) => {
-      if (err) {
-        res.json({ message: err.message, type: 'danger' })
-      } else {
-        req.session.message = {
-          type: 'success',
-          message: 'User updated successfully'
-        }
-        res.redirect('/admin/admin-user')
-      }
-    })
-
   },
-
 
   bannerPage: async (req, res, next) => {
-    const banners = await banner.find()
-    res.render('admin/bannermgt', { title: 'Banner', page: 'Banner', banners })
+    try {
+      const banners = await banner.find()
+      res.render('admin/bannermgt', { title: 'Banner', page: 'Banner', banners })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addBannerPage: (req, res) => {
-    res.render('admin/add-banner', { title: 'Add banner', page: 'Add banner' })
+    try {
+      res.render('admin/add-banner', { title: 'Add banner', page: 'Add banner' })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addBanner: (req, res) => {
@@ -811,10 +499,13 @@ module.exports = {
         description: req.body.description
       })
 
-      bannerr.save((err, bannerr) => {
-        if (err) {
-          console.log(err);
-          res.json({ message: err.message, type: "danger" })
+      bannerr.save((error, bannerr) => {
+        if (error) {
+          req.session.message = {
+            type: 'danger',
+            message: 'Error while adding banner'+error.message
+          }
+          res.redirect('/admin/admin-banner')
         } else {
           req.session.message = {
             type: 'success',
@@ -824,25 +515,27 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   editBannerPage: (req, res, next) => {
-    let id = req.params.id
-    banner.findById(id, (err, banners) => {
-      if (err) {
-        res.redirect('admin/admin-banner')
-      } else {
-        if (banners == null) {
+    try {
+      let id = req.params.id
+      banner.findById(id, (err, banners) => {
+        if (err) {
           res.redirect('admin/admin-banner')
         } else {
-          res.render('admin/edit-banner', { title: 'Edit Banner', page: 'Edit Banner', banners: banners, })
+          if (banners == null) {
+            res.redirect('admin/admin-banner')
+          } else {
+            res.render('admin/edit-banner', { title: 'Edit Banner', page: 'Edit Banner', banners: banners, })
+          }
         }
-      }
-    })
+      })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   editBanner: (req, res, next) => {
@@ -851,11 +544,7 @@ module.exports = {
       let new_img = ''
       if (req.file) {
         new_img = req.file.filename
-        try {
           fs.unlinkSync('./public/uploads/' + req.body.old_img)
-        } catch (err) {
-          console.log(err);
-        }
       } else {
         new_img = req.body.old_img
       }
@@ -863,9 +552,13 @@ module.exports = {
         name: req.body.name,
         image: new_img,
         description: req.body.description
-      }, (err, result) => {
-        if (err) {
-          res.json({ message: err.message, type: 'danger' })
+      }, (error, result) => {
+        if (error) {
+          req.session.message = {
+            type: 'danger',
+            message: 'Error while updating banner,'+error.message
+          }
+          res.redirect('/admin/admin-banner')
         } else {
           req.session.message = {
             type: 'success',
@@ -875,10 +568,8 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   disableBanner: (req, res, next) => {
@@ -891,8 +582,7 @@ module.exports = {
       }).then(() => {
         res.redirect('/admin/admin-banner')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
   },
@@ -907,8 +597,7 @@ module.exports = {
       }).then(() => {
         res.redirect('/admin/admin-banner')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
   },
@@ -918,14 +607,14 @@ module.exports = {
       let id = req.params.id
       banner.findByIdAndRemove(id, (err, result) => {
         if (result.image != '') {
-          try {
             fs.unlinkSync('./public/uploads/' + result.image)
-          } catch (err) {
-            console.log(err);
-          }
         }
         if (err) {
-          res.json({ message: err.message })
+          req.session.message = {
+            type: 'danger',
+            message: 'Error while deleting,'+ err.message
+          }
+          res.redirect('/admin/admin-banner')
         } else {
           req.session.message = {
             type: 'success',
@@ -935,19 +624,25 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   couponPage: async (req, res, next) => {
-    const coupons = await coupon.find()
+    try {
+      const coupons = await coupon.find()
     res.render('admin/couponmgt', { title: 'Coupons', page: 'Coupons', coupons })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addCouponPage: (req, res, next) => {
-    res.render('admin/add-coupon', { title: 'Add coupon', page: 'Add coupon' })
+    try {
+      res.render('admin/add-coupon', { title: 'Add coupon', page: 'Add coupon' })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   addCoupon: (req, res, next) => {
@@ -968,7 +663,6 @@ module.exports = {
 
       coupons.save((err, coupon) => {
         if (err) {
-          console.log(err);
           req.session.message = {
             type: 'danger',
             message: 'Already there is coupon with same name or code'
@@ -983,31 +677,33 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
 
   },
 
   editCouponPage: (req, res, next) => {
-    let id = req.params.id
-    coupon.findById(id, (err, coupons) => {
-      if (err) {
-        res.redirect('admin/admin-coupon')
-      } else {
-        if (coupons == null) {
+    try {
+      let id = req.params.id
+      coupon.findById(id, (err, coupons) => {
+        if (err) {
           res.redirect('admin/admin-coupon')
         } else {
-          res.render('admin/edit-coupon', { title: 'Edit Coupon', page: 'Edit Coupon', coupons: coupons, })
+          if (coupons == null) {
+            res.redirect('admin/admin-coupon')
+          } else {
+            res.render('admin/edit-coupon', { title: 'Edit Coupon', page: 'Edit Coupon', coupons: coupons, })
+          }
         }
-      }
-    })
+      })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   editCoupon: (req, res, next) => {
     try {
       let id = req.params.id
-
       const currentDate = new Date();
 
       coupon.findByIdAndUpdate(id, {
@@ -1027,11 +723,9 @@ module.exports = {
           res.redirect('/admin/admin-coupon')
         } else {
           let date = new Date(req.body.date)
-
           if (date.getTime() < currentDate.getTime()) {
             this.status = 'expired';
           }
-          console.log("false");
           req.session.message = {
             type: 'success',
             message: 'Coupon updated successfully'
@@ -1040,10 +734,8 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   deleteCoupon: (req, res, next) => {
@@ -1051,7 +743,11 @@ module.exports = {
       let id = req.params.id
       coupon.findByIdAndRemove(id, (err, result) => {
         if (err) {
-          res.json({ message: err.message })
+          req.session.message = {
+            type: 'danger',
+            message: 'Error while deleting coupon, '+err.message
+          }
+          res.redirect('/admin/admin-coupon')
         } else {
           req.session.message = {
             type: 'success',
@@ -1061,24 +757,27 @@ module.exports = {
         }
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
-
-
   vieworder: async (req, res, next) => {
-    const order = await orders.find().populate('userId').sort({ ordered_date: -1 })
-    res.render('admin/ordermgt', { title: 'Orders', page: 'Orders', order })
+    try {
+      const order = await orders.find().populate('userId').sort({ ordered_date: -1 })
+      res.render('admin/ordermgt', { title: 'Orders', page: 'Orders', order })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   order_details: async (req, res, next) => {
-    orderId = req.params.id
-    let orderInfo = await orders.findOne({ _id: orderId }).populate(['products.item', 'userId'])
-
-    res.render('admin/view-order', { title: 'Orders', page: 'View order', orderInfo })
+    try {
+      orderId = req.params.id
+      let orderInfo = await orders.findOne({ _id: orderId }).populate(['products.item', 'userId'])
+      res.render('admin/view-order', { title: 'Orders', page: 'View order', orderInfo })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
   cancel_order: async (req, res, next) => {
@@ -1087,12 +786,9 @@ module.exports = {
       orders.updateOne({ _id: orderId }, { $set: { order_status: 'cancelled', 'delivery_status.cancelled.state': true, 'delivery_status.cancelled.date': Date.now() } }).then(() => {
         res.redirect('/admin/admin-order')
       })
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       next(createError(404));
     }
-
-
   },
 
   deliveryStatus: async (req, res, next) => {
@@ -1113,23 +809,28 @@ module.exports = {
         })
       }
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
-
   },
 
   invoice: async (req, res, next) => {
-    let orderId = req.params.id
+    try {
+      let orderId = req.params.id
     let orderInfo = await orders.findOne({ _id: orderId }).populate(['products.item', 'userId'])
     res.render('admin/invoice', { title: 'invoice', page: 'invoice', orderInfo })
+    } catch (error) {
+      next(createError(404));
+    }
   },
 
-  report:async (req, res, next) => {
-    res.render('admin/report', { title: 'Report', page: 'Report' })
+  report: async (req, res, next) => {
+    try {
+      res.render('admin/report', { title: 'Report', page: 'Report' })
+    } catch (error) {
+      next(createError(404));
+    }
   },
-  salesReport:async (req, res, next) => {
-    console.log('report');
+  salesReport: async (req, res, next) => {
     try {
       let salesData = await orders.aggregate([
         {
@@ -1143,33 +844,31 @@ module.exports = {
         },
         {
           $lookup: {
-            foreignField: "name",
-            localField: "_id",
             from: "admin_users",
-            as: "userid",
+            localField: "userId",
+            foreignField: "_id",
+            as: "user",
           },
         },
         { $sort: { ordered_date: -1 } },
-      ]);  
-      console.log(salesData,"innnn");
-      res.render('admin/salesReport', { title: 'Sales Report', page: 'Sales Report',salesData })
+      ]);
+      res.render('admin/salesReport', { title: 'Sales Report', page: 'Sales Report', salesData })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
   },
 
   adminLogout: (req, res, next) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(err);
-      } else {
-        // history.replaceState(null, null, '/');
-        res.redirect('/admin')
-      }
-    });
-
+    try {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          res.redirect('/admin')
+        }
+      });
+    } catch (error) {
+      next(createError(404));
+    }
   }
-
-
 }

@@ -27,25 +27,25 @@
        <div class="col-lg-6 text-center py-5">
          <h2>REGISTER NOW</h2>
  
-         <form action="/otp" method="post">
+         <form action="/otp" method="post" name="signupForm" onsubmit="return validateForm()">
            <div class="form-row  pt-5">
              <div class="offset-1 col-lg-10" id="inputElements">
- <input type="text" name="name" class="inp" placeholder=" Enter your name" required pattern="[A-Z a-z]{3,22}">
+ <input type="text" name="name" class="inp" placeholder=" Enter your name"  >
              </div>
            </div>
            <div class="form-row pt-3">
              <div class="offset-1 col-lg-10" id="inputElements">
- <input type="email" name="email" class="inp" placeholder=" Enter your email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+ <input type="text" name="email" class="inp" placeholder=" Enter your email" >
              </div>
            </div>
            <div class="form-row  pt-3">
             <div class="offset-1 col-lg-10" id="inputElements">
-<input type="tel" name="phone" class="inp" placeholder=" Enter your phone number" required pattern="[7896][0-9]{9}">
+<input type="tel" name="phone" class="inp" placeholder=" Enter your phone number"  >
             </div>
           </div>
           <div class="form-row pt-3">
             <div class="offset-1 col-lg-10" id="inputElements">
-<input type="password" name="password" class="inp" placeholder=" Enter your password" required pattern=".{8,}">
+<input type="password" name="password" class="inp" placeholder=" Enter your password"  >
             </div>
           </div>
           <div class="alert-text signup__alert">
@@ -74,3 +74,42 @@
   </section>
  
   
+
+  <script>
+    function validateForm() {
+  var name = document.forms["signupForm"]["name"].value;
+  var email = document.forms["signupForm"]["email"].value;
+  var phone = document.forms["signupForm"]["phone"].value;
+  var password = document.forms["signupForm"]["password"].value;
+  
+  // Validate name
+  if (name == "") {
+    Swal.fire('Enter a name')
+    return false;
+  }
+
+  // Validate email
+  if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    
+    Swal.fire('Invalid email address')
+    return false;
+  }
+
+  // Validate phone number
+  if (!/^\d{10}$/.test(phone)) {
+    
+    Swal.fire('Invalid phone number')
+    return false;
+  }
+
+  // Validate password
+  if (password.length < 8) {
+    
+    Swal.fire('Password must be at least 8 characters long')
+    return false;
+  }
+
+  return true;
+}
+
+  </script>

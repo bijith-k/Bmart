@@ -5,10 +5,8 @@ const expressLayouts = require('express-ejs-layouts')
  
 const session = require('express-session')
 const bodyParser = require('body-parser')
-// const fileUpload = require('express-fileupload')
 const path = require('path')
 const bcrypt =require('bcrypt')
-//const db=require('./config/connection')
 const morgan = require('morgan')
 const adminRouter = require('./routes/admin')
 const userRouter = require('./routes/user')
@@ -74,15 +72,10 @@ app.use((req,res,next)=>{
 
  
 
-
-
-
 app.use(expressLayouts)
 app.set('layout','./layout/layout')
 app.set('view engine', 'ejs');
 app.set('views','views')
-// app.use(fileUpload())
-
  
 
 app.use(bodyParser.urlencoded({extended:false}))
@@ -96,20 +89,15 @@ app.use(function(req, res, next) {
 });
  
 
-
 app.use( (err, req, res, next) => {
   let errStatus = err.status || 500;
-  // render the error page
-  // console.log(err);
   res.status(errStatus);
   if(errStatus==404) {
-    // console.error(err);
     res.render('errorPage',{title:"Page not found"})
   }else{
-        res.send('<div style="font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif; text-align:center;"><h2 style="color:red;">500 |  Internal error detected!</h2> We will be back soon..</div>')
-        // res.render('error');
-        
-    }
+    console.log(err);
+    console.log(errStatus);
+    res.send('<div style="font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif; text-align:center;"><h2 style="color:red;">500 |  Internal error detected!</h2> We will be back soon..</div>') }
 });
 
 

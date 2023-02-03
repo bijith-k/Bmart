@@ -61,11 +61,11 @@
       </button> -->
     </div>
     
-  <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+  <button class="hamburger-menu navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse order-lg-1" id="navMenu">
-    <ul class="navbar-nav mx-auto text-center">
+  <div class=" collapse navbar-collapse order-lg-1" id="navMenu">
+    <ul class="menu-content navbar-nav mx-auto text-center">
   <li class="nav-item px-2 py-2">
     <a class="nav-link" href="/">HOME</a>
   </li>
@@ -107,9 +107,26 @@
     <!-- </li> -->
   </li>
   <li class="nav-item px-2 py-2 border-0">
-    <a class="nav-link" href="/">CONTACT</a>
+    <a class="nav-link" href="/contact-us">CONTACT</a>
   </li>
     </ul>
   </div>
   </div>
    </nav>
+
+
+   <script>
+    $(document).ready(function(){
+  var menuOpen = false;
+  
+  $('.hamburger-menu').click(function(){
+    if(menuOpen){
+      $('.menu-content').slideUp();
+      menuOpen = false;
+    } else {
+      $('.menu-content').slideDown();
+      menuOpen = true;
+    }
+  });
+});
+   </script>

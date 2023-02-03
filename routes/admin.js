@@ -1,36 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
-const admin_users = require('../models/admin_users')
-const fs = require('fs')
-const path = require('path')
-const admin_products = require('../models/admin_products')
-const controller = require('../controllers/admin_controller')
-const admin_details = require('../models/admin_details')
-const bcrypt = require('bcrypt')
-const Category = require('../models/admin_category')
-const banner = require('../models/admin_banner')
-const sharp = require('sharp')
-const coupon = require('../models/admin_coupons')
-
-
-
 const {addBanner,addBannerPage,addCategory,
   addCategoryPage,addCoupon,addCouponPage,
-  addProducts,addProductsPage,addUsers,addUsersPage,
-  adminLogin,adminLoginPage,adminLogout,admin_panel,
+  addProducts,addProductsPage,adminLogin,adminLoginPage,adminLogout,admin_panel,
   allProducts,allUsers,bannerPage,blockUser,cancel_order,categoryPage,
-  couponPage,deleteBanner,deleteCategory,deleteCoupon,deleteProducts,deleteUsers,
-  deliveryStatus,disableBanner,editBanner,editBannerPage,editCategory,
+  couponPage,deleteBanner,deleteCoupon,deliveryStatus,disableBanner,editBanner,editBannerPage,editCategory,
   editCategoryPage,editCoupon,editCouponPage,editProducts,
-  editProductsPage,editUsers,editUsersPage,enableBanner,getResultImages,
-  invoice,listCategory,listProduct,order_details,resizeImages,status,unblockUser,
-  unlistCategory,unlistProduct,uploadImages,vieworder,report,salesReport
+  editProductsPage,enableBanner, invoice,listCategory,listProduct,order_details,unblockUser,
+  unlistCategory,unlistProduct ,vieworder,report,salesReport
 } = require('../controllers/admin_controller')
 
 
 
- 
 
 const FILE_TYPE_MAP = {
     'image/png':'png',
@@ -48,17 +30,13 @@ const storage = multer.diskStorage({
     cb(uploadError, './public/uploads')
   },
   filename:async function (req, file, cb) {
-    // console.log(file);
     const filename = file.originalname.split(' ').join('-')
     const extension =await FILE_TYPE_MAP[file.mimetype]
     cb(null, `${filename}-${Date.now()}.${extension}`)
-    // console.log(`${filename}-${Date.now()}.${extension}`);
   }
 })
  
 const uploadOptions = multer({ storage: storage })
-
-
 
 
 const verifyAdmin = (req, res, next) => {
@@ -114,30 +92,8 @@ router.post('/edit-product/:id',verifyAdmin, uploadOptions.array("images",4), ed
 router.post('/edit-category/:id',uploadOptions.single('image'),editCategory)
 router.post('/edit-banner/:id',uploadOptions.single('image'),editBanner)
 router.post('/edit-coupon/:id',editCoupon)
-
 router.post('/delivery-status/:id',deliveryStatus)
-router.post('/report/sales',salesReport)
+router.post('/report/sales',verifyAdmin,salesReport)
 
-
-
-
-
-router.get('/delete-product/:id',verifyAdmin, deleteProducts)
-router.get('/delete-user/:id',verifyAdmin, deleteUsers )
-router.get('/delete-category/:id',deleteCategory)
  
-
-
-
-// router.post('/add-product',verifyAdmin,controller.uploadImages,controller.resizeImages,controller.getResultImages)
-// router.get('/add_user',verifyAdmin, controller.addUsersPage)
-// router.post('/add_user',verifyAdmin, controller.addUsers)
-// router.get('/edit_user/:id',verifyAdmin, controller.editUsersPage)
-// router.post('/edit_user/:id',verifyAdmin, controller.editUsers)
-
-// router.post('/getProducts',(req,res)=>{
-//   let payload = req.body.payload.trim()
-//   console.log(payload);
-// })
-
 module.exports = router;

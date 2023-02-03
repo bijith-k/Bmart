@@ -137,7 +137,7 @@
 
                             <input type="text" class="form-control bg-light" id="coupon-code" placeholder="Coupon Code">
                             <div class="input-group-append">
-                                <button class="btn text-white" style=" background-color: #44007c"
+                                <button type="button" class="btn text-white" style=" background-color: #44007c"
                                     id="apply-coupon">Redeem</button>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                             <label for="css">Online Payment</label></span>
                     </div>
 
-
+                    
                     <button class="btn w-100 text-white" style=" background-color: #44007c" type="submit">PLACE
                         ORDER</button>
                     <div id="paypal-button-container" class="mt-3"></div>
@@ -188,8 +188,7 @@
                                         <p id="p"><b>
                                                 <%= row.name %>
                                             </b><br>
-                                            <%=row.house +','+
-                                                row.city+','+row.post+','+row.district+','+row.state+','+row.pin %>
+                                            <%=row.house%>, <%= row.city%> <br> <%=row.post%> ,<%=row.district%> <br> <%=row.state%> , <%=row.pin %>
 
                                         </p>
                                     </div>
@@ -341,12 +340,6 @@
             });
 
 
-
-
-
-
-
-
         </script>
 
         <script>
@@ -365,7 +358,16 @@
                             ).then(() => {
                                 location.href = '/order-success'
                             })
-                        } else {
+                        }else if(response.outOfStock){
+                            Swal.fire(
+                                'Sorry',
+                                'One or many of the selected product is out of stock',
+                                'error'
+                            ).then(() => {
+                                location.href = '/cart'
+                            })
+                        }
+                         else {
                             razorpayPayment(response)
                         }
 
@@ -381,7 +383,7 @@
                     "currency": "USD",
                     "name": "B Mart",
                     "description": "Test Transaction",
-                    "image": "https://example.com/your_logo",
+                    "image": "/images/logo.jpg",
                     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": function (response) {
 
