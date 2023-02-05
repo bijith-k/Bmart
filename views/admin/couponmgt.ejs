@@ -40,9 +40,9 @@
               <td><%= row.min_bill %></td>
               <td><%= row.cap %></td>
               <td><%= row.discount %></td>
-              <!-- <td ><%= row.expire %></td> -->
+               
               <td><%= row.expire.getDate()+ "-" +(row.expire.getMonth()+1) + "-" +row.expire.getFullYear() %></td>
-              <!-- <td><%= row.status %></td> -->
+              
               <td>
                 <%
                   var expiryDate = new Date(row.expire);

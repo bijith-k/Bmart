@@ -125,7 +125,6 @@ module.exports = {
         res.redirect('/admin/admin-user')
       })
     } catch (error) {
-      console.log(error);
       next(createError(404));
     }
   },

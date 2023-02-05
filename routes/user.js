@@ -33,11 +33,19 @@ const verifyUser = async(req, res, next) => {
   }
 }
 
+const loggedInSession = async(req,res,next)=>{
+  if(req.session.userLoggedIn){
+    res.redirect('/')
+  }else{
+    next()
+  }
+}
+
 
 router.get('/', homePage)
 router.get('/user-registration', registrationPage)
 router.get('/user-signin', signinPage)
-router.get('/resendotp', resendOTP)
+router.get('/resendotp',loggedInSession, resendOTP)
 router.get('/forgot-password', forgotPasswordPage)
 router.get('/reset-password', resetPasswordPage)
 router.get('/categories', productListing)
@@ -61,8 +69,8 @@ router.get('/user-logout', userLogout)
 
 
 
-router.post('/otp', getOTP)
-router.post('/verify-otp', verifyOTP)
+router.post('/otp',loggedInSession, getOTP)
+router.post('/verify-otp',loggedInSession, verifyOTP)
 router.post('/user-signin', signin)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)

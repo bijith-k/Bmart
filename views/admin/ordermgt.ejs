@@ -60,7 +60,7 @@
                     <a href="/admin/order-details/<%= orders._id %>" class="text-success"><button type="button"
                         class="btn btn-secondary" style="width: 70px;">View</button></i></a>
 
-                    <% if(orders.delivery_status.cancelled.state==false){ %>
+                    <% if(orders.delivery_status.cancelled.state==false && orders.delivery_status.delivered.state != true){ %>
                       <a href="/admin/cancel-order/<%= orders._id %>" class="text-success"><button type="button"
                           class="btn btn-danger mt-2" style="width: 70px;">Cancel</button></i></a>
                       <% } %>

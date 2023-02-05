@@ -26,26 +26,6 @@
 
 
           <div class="row" id="ordered-items">
-
-            <!-- <% orderInfo[0].products.forEach((prod)=> { %>
-              <div class="card m-2 " style="width: 15rem; height: 29rem;">
-                <img class="card-img-top mt-2" src="/uploads/<%= prod.item.images[0]  %>" alt="Pro-img"
-                  style="height: 12rem;">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <%= prod.item.name %>
-                  </h5>
-                  <p class="card-text">Price : $<%= prod.item.selling_price %>
-                  </p>
-                  <p class="card-text">Quantity : <%= prod.quantity %>
-                  </p>
-                  <p class="card-text">Total price : $<%= prod.price %>
-                  </p>
-                </div>
-
-              </div>
-              <% }) %> -->
-             
                 <div class="border p-2 mt-2" id="">
                   <div id="">
 
@@ -74,20 +54,11 @@
                         <div class="table-responsive">
                           <table class="table table-secondary table-striped my-2">
                              
-                            <!-- <thead>
-                              <tr>
-                                <th scope="col">NO</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Total</th>
-                              </tr>
-                            </thead> -->
+                             
                             <tbody>
                               <% orderInfo[0].products.forEach((prod,index)=> { %>
                               <tr>
-                                <!-- <th class="text-center" scope="row"><%= index+1 %></th> -->
+                                
                                 <td class="text-center"><img style="height: 50px; width: 50px; box-shadow: none; border-radius: 0;" src="/uploads/<%= prod.item.images[0] %>" ></td>
                                 <td class="text-center"><%= prod.item.name %></td>
                                 <td class="text-center">$<%= prod.item.selling_price %> x </td>

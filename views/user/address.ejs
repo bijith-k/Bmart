@@ -173,7 +173,7 @@
           dataType: "json",
           encode: true,
         }).done(function (data) {
-          console.log(data);
+          
           $('#actionmodel').attr('action', '/update-address/' + data._id)
           $('#name').val(data.name)
           $('#house').val(data.house)

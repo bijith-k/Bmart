@@ -1269,10 +1269,10 @@ background-color: #FCBABA;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('/images/register page image.jpg');
+    /* background-image: url('/images/register page image.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: cover;
+    background-size: cover; */
     flex-direction: column;
     background-color: #fff;
   }

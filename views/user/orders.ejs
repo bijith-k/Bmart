@@ -53,7 +53,7 @@
                 <% orderInfo.forEach((order) => { %>
                 <tr  >
                   <td class="text-center"><%= order.ordered_date.getDate()+ '-'+ (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %></td>
-                  <!-- <td class="text-center"><%= order.address.name %> <br> <%= order.address.house %> <br> <%= order.address.city %> <br> <%= order.address.district %> <br> <%= order.address.state %> <br> <%= order.address.post %> <br> <%= order.address.pin  %></td> -->
+                  
                   <td class="text-center">$<%= order.total %></td>
                   <td class="text-center"><%= order.payment.pay_method  %></td>
                   <td class="text-center text-capitalize""><%= order.order_status  %></td>
@@ -71,7 +71,7 @@
 
 
                   <td style="display: flex; justify-content: center;"><a href="/ordered-items/<%= order._id %>"  ><button type="button btn-sm" class="btn  text-white" style="width: 90px; display: block; background-color: #55009b;">View</button></i></a>
-                    <!-- <a href="/cancel-order/<%= order._id %>" ><button type="button btn-sm" class="btn btn-danger  " style="width: 90px;">Cancel</button></i></a> -->
+                    
                   </td>
                 </tr>
                 <% }) %>
@@ -89,43 +89,6 @@
             </div>
           
           <% } %>
-
-          <!-- <div class="border p-2 mt-2" id="">
-            <div id="addressList">
-              <h5 class="text-secondary border-bottom py-2 mb-2">Your Orders</h5>
-              <% orderInfo.forEach((order)=> { %>
-
-
-                <div class="card p-3 bg-light my-2  " style="display: flex;  border-radius: 0;">
-                  <div style=" display: flex; justify-content: space-between;">
-                    <h6 style="  display: inline;">Order Id : <%= order._id %>
-                    </h6>
-                    <h6 style="  display: inline; margin-right: 10%;">Order Date : <%= order.ordered_date.getDate()+ '-' +
-                        (order.ordered_date.getMonth()+1)+'-'+ order.ordered_date.getFullYear() %>
-                    </h6>
-                  </div>
-                  <div style=" display: flex; justify-content: space-between;">
-                    <h6 style="  display: inline;">Status : <span class="text-uppercase">
-                        <%= order.order_status %>
-                      </span></h6>
-                    <a href="/ordered-items/<%= order._id %>" style="  display: inline;  margin-right: 10%;"><button type="button"
-                        class="btn text-white" style="background-color: #55009b;">View</button></i></a>
-
-                  </div>
-
-
-                </div>
-                </a>
-                <% }) %>
-            </div>
-
-
-
-          </div> -->
-
-
-
-
 
         </div>
       </div>

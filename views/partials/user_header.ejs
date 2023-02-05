@@ -1,46 +1,4 @@
-<!-- <header>
-  <div class="main_menu">
-    <nav class="navbar navbar-expand-lg bg-dark">
-      <div class="container">
-        <a class="navbar-brand" style="color: aliceblue;" href="#"><h3>B MART</h3></a>
-        <button class="navbar-toggler"  style=" border: 1px solid aliceblue;"  type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
-            <li class="nav-item">
-              <a class="nav-link active" id="navtop" aria-current="page" href="/">HOME</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="navtop" href="/register">SHOP</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="navtop">ACCOUNT</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="navtop">CONTACT</a>
-            </li>
-          </ul>
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex" id="navicons">
-            <li class="nav-item">
-              <i class="fa fa-shopping-cart" style="color: white;"></i>
-            </li>
-            
-            <li class="nav-item">
-             <i class="fa fa-heart" style="color: white;"></i>
-            </li>
-            <li class="nav-item">
-              <i class="fa fa-search" style="color: white;"></i>
-             </li>
-            
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </div>
-</header> -->
-
+ 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
   <div class="container">
@@ -50,15 +8,12 @@
       <button type="button" class="btn position-relative">
        <a href="/cart"> <i class="fa fa-shopping-cart" style="color: white;"></i></a>
        
-        <!-- <span class="position-absolute top-0 start-100 translate-middle badge bg-light text-dark">6</span> -->
+         
       </button>
       <button type="button" class="btn position-relative">
         <a href="/wishlist"> <i class="fa fa-heart" style="color: white;"></i></a>
-        <!-- <span class="position-absolute top-0 start-100 translate-middle badge bg-light text-dark">6</span> -->
       </button>
-      <!-- <button type="button" class="btn position-relative">
-        <i class="fa fa-search" style="color: white;"></i>
-      </button> -->
+      
     </div>
     
   <button class="hamburger-menu navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -73,19 +28,7 @@
     
     <a class="nav-link" href="/categories">SHOP</a>
   </li>
-  <!-- <li class="nav-item px-2 py-2"> -->
-    <!-- <div class="dropdown bg-dark">
-      <button class="btn  dropdown-toggle text-white" style="background-color: rgb(0, 0, 0); border-radius: 0; display: inline-block;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        ACCOUNT
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">My Account</a></li>
-        <li><a class="dropdown-item" href="#">Login</a></li>
-        <li><a class="dropdown-item" href="#">Register</a></li>
-        <li><a class="dropdown-item" href="/user-logout">Logout</a></li>
-      </ul>
-    </div> -->
-    <!-- <a class="nav-link" href="home.ejs">ACCOUNT</a> -->
+  
     <li class="nav-item px-2 py-2 dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         ACCOUNT
@@ -94,17 +37,17 @@
 
        
         <% if(user) {  %>
-        <li><a class="dropdown-item" href="/account">My Account</a></li>
-        <li><a class="dropdown-item" href="/user-logout">Logout</a></li>
+        <li><a class="dropdown-item text-center" href="/account">My Account</a></li>
+        <li><a class="dropdown-item text-center" href="/user-logout">Logout</a></li>
         <% } else { %>
-          <li><a class="dropdown-item" href="/user-signin">Login</a></li>
-          <li><a class="dropdown-item" href="/user-registration">Register</a></li>
+          <li><a class="dropdown-item text-center" href="/user-signin">Login</a></li>
+          <li><a class="dropdown-item text-center" href="/user-registration">Register</a></li>
         
        <% } %>
        
          
       </ul>
-    <!-- </li> -->
+     
   </li>
   <li class="nav-item px-2 py-2 border-0">
     <a class="nav-link" href="/contact-us">CONTACT</a>

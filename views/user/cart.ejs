@@ -58,7 +58,7 @@
                         <%= product.item.selling_price %>
                       </span></h6>
                   </td>
-                  <!-- <td><input class="w-25 pl-1" value="1" type="number"></td> -->
+                 
                   <td>
                     <button class="cart-item-count"
                       onclick="changeQuantity('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>',-1)"
@@ -75,7 +75,7 @@
                         <%= product.price %>
                       </span></h6>
                   </td>
-                  <!-- <td><a href="/remove-product"><i class="fas fa-trash"></i></a></td> -->
+                 
                   <td><button id="Remove" class="btn btn-danger"
                       onclick="removeProduct('<%= prodList[0]._id%>','<%=product.item._id %>','<%= prodList[0].user %>')">Remove</button>
                   </td>
@@ -104,34 +104,14 @@
 
     <div class="row  " style="display: flex;
     justify-content: flex-end;">
-      <!-- <div class="coupon col-lg-6 col-md-6 col-12 mb-4">
-
-        <div>
-          <h5>COUPON</h5>
-          <p>Enter your coupon code if you have one</p>
-          <input type="text" placeholder="Coupon code">
-          <button>APPLY COUPON</button>
-        </div>
-      </div> -->
+       
       <% if(prodList[0] !=null && prodList[0].products.length !=0 ) { %>
          
       <div class="total col-lg-6 col-md-6 col-12  ">
         <% prodList.forEach(product=>{ %>
           <div>
             <h5>CART TOTAL</h5>
-            <!-- <div class="d-flex justify-content-between">
-            <h6>Subtotal</h6>
-            <h6><span>$</span><span id="grandTotal<%= prodList[0].user %>"><%= prodList[0].totalprice %></span></h6>
-          </div> -->
-            <!-- <div class="d-flex justify-content-between">
-            <h6>Coupon Discount</h6>
-            <h6><span>$</span><span>0</span></h6>
-          </div>
-          <div class="d-flex justify-content-between">
-            <h6>Shipping</h6>
-            <h6><span>$</span><span>0</span></h6>
-          </div> -->
-            <!-- <hr class="second-hr"> -->
+             
             <div class="d-flex justify-content-between">
               <h6>Total</h6>
               <h6><span>$</span><span id="grandTotal<%= prodList[0]._id %>" class="total-price">
@@ -181,10 +161,7 @@
               document.getElementById(proId).innerHTML = quantity + count
               document.getElementById('total' + proId).innerHTML = parseInt(response.productTotal) * parseInt(response.q)
               document.getElementById('grandTotal' + cartId).innerHTML = parseInt(response.totalPrice)
-              // document.getElementById('bill' + userId).innerHTML = parseInt(response.totalPrice)
-
-
-              // location.reload()
+               
             }
           }
         })

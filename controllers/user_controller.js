@@ -121,7 +121,6 @@ module.exports = {
 
   verifyOTP: (req, res, next) => {
     if (req.body.otp == otp) {
-      console.log('otp correct');
       const user = new admin_users({
         name: Name,
         email: Email,
@@ -141,10 +140,12 @@ module.exports = {
 
           res.redirect('/')
         }).catch((err) => {
+          console.log(err);
           next(createError(404));
         })
 
       }).catch((err) => {
+        console.log(err);
         next(createError(404));
       })
     } else {
@@ -568,11 +569,9 @@ module.exports = {
 
 
         if (!isStockAvailable) {
-          console.log("innnsfjsfasfjladjflas");
           let outOfStockProducts = [];
           cartInfo.products.forEach(product => {
             if (product.quantity > product.item.stock_count) {
-              console.log("indfsdfsjdf");
               outOfStockProducts.push(product.item.name);
             }
           });
@@ -787,7 +786,6 @@ module.exports = {
             if (err) {
               console.log(err);
             } else {
-              console.log(order, "orrd");
               res.json(order)
             }
           })

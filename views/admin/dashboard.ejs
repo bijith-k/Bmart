@@ -125,12 +125,7 @@
 
 
   </div>
-
-
-
   </div>
-
-
   </div>
 
 
@@ -146,7 +141,7 @@
       ],
       datasets: [{
         label: 'Payment Method',
-        data: [ `<%= codNum %>` , `<%= onlineNum %>`  ],
+        data: [`<%= codNum %>`, `<%= onlineNum %>`],
         backgroundColor: [
           "#FAEBD7",
           "#DCDCDC"
@@ -203,7 +198,7 @@
       ],
       datasets: [{
         label: 'Order Data',
-        data: [ `<%= paid %>` , `<%= paymentPending %>` , `<%= cancelledOrders %>` , `<%= pendingOrders %>` ],
+        data: [`<%= paid %>`, `<%= paymentPending %>`, `<%= cancelledOrders %>`, `<%= pendingOrders %>`],
         backgroundColor: [
           "rgba(21, 255, 0,.5)",
           "rgba(227, 255, 45,.5)",
@@ -251,10 +246,10 @@
 
   <script>
 
-     
- 
-  let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
- 
+
+
+    let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
     var ctx3 = $("#sales");
 
 
@@ -262,10 +257,10 @@
       labels: dayNames,
       datasets: [{
         label: 'Weekly Sales',
-        data: <%= JSON.stringify(SalesCount.map(d=>d.count)) %>,
+        data: <%= JSON.stringify(SalesCount.map(d => d.count)) %>,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
-        fill:false
+        fill: false
       }]
     };
 
@@ -278,7 +273,7 @@
         fontSize: 18,
         fontColor: "#111"
       },
-       
+
     };
 
 
