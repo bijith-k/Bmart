@@ -17,7 +17,6 @@ const { wishlistPage, add_to_wishlist, removeWishlist } = require('../controller
 const verifyUser = async(req, res, next) => {
   if (req.session.userLoggedIn) {
     let udata = await admin_users.findOne({ _id: req.session.user._id })
-    console.log(udata);
     if (udata.status != 'blocked') {
       next()
     } else {

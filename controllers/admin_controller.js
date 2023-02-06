@@ -108,7 +108,7 @@ module.exports = {
           SalesCount.push({_id:{day:i},count:0})
         }
       }
-      console.log(SalesCount);
+       
       res.render('admin/dashboard', { title: 'Admin Panel', page: 'Dashboard', salesData, products, categories, users, order, codNum, onlineNum, cancelledOrders, pendingOrders, paymentPending, paid,  SalesCount })
     } catch (error) {
       next(createError(404));

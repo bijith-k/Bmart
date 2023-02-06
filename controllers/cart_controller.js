@@ -99,11 +99,21 @@ module.exports = {
   removeProduct: async (req, res,next) => {
     try {
     let details = req.body
+
+    let quantity = await cart.findOne({ _id: details.cart , 'products.item':details.product})
+     
+    quantity.products.forEach(e => {
+      if(e.item == details.product ){
+        quantity = e.quantity
+      }
+    });
+    
     let product = await admin_products.findOne({ _id: details.product })
-    let cartData = await cart.findByIdAndUpdate({ _id: details.cart }, { $pull: { products: { item: details.product } }, $inc: { 'totalprice': -product.selling_price } })
-  
-    let totalPrice = cartData.totalprice
-    let productTotal = product.selling_price
+    let cartData = await cart.findByIdAndUpdate({ _id: details.cart }, { $pull: { products: { item: details.product } }, $inc: { 'totalprice': -(product.selling_price*quantity ) } })
+    
+    let totalPrice = cartData.totalprice 
+    let productTotal = product.selling_price *quantity
+     
     if (cartData) {
       res.json({ removeProduct: true, totalPrice, productTotal })
     }
