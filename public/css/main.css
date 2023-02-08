@@ -1507,5 +1507,13 @@ background-color: #FCBABA;
 }
 
 
-/* brand slider */
+@media (max-width: 992px) {
+  #payDiv {
+    order: 2;
+  }
+  
+  #addressDiv {
+    order: 1;
+  }
+}
  
