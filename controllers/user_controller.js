@@ -249,7 +249,7 @@ module.exports = {
           to: oldUser.email,
           from: 'bmartlaps@outlook.com',
           subject: "Link for resetting password: ",
-          html: '<p>Hi ' + oldUser.name + ',Forgot password?</p> <p> Click the link below to reset password </p><a href="http://localhost:3000/reset-password?token=' + randomStringg + '">Click here</a>' // html body
+          html: '<p>Hi ' + oldUser.name + ',Forgot password?</p> <p> Click the link below to reset password </p><a href="https://bmart.bijith.club/reset-password?token=' + randomStringg + '">Click here</a>' // html body
         }
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
@@ -318,11 +318,13 @@ module.exports = {
     try {
       let user = req.session.user
       const query = req.query.category
+      const page = req.query.page
+
       if (query) {
         try {
           const categories = await Category.find()
           const products = await admin_products.find({ category: query })
-          res.render('user/listing', { products, categories, title: 'categories', user })
+          res.render('user/listing', { products, categories, title: 'categories', user,page })
         }
         catch (error) {
           next(createError(404))
@@ -333,7 +335,7 @@ module.exports = {
           let key = req.query.search
           let products = await admin_products.find({ name: { $regex: key, $options: 'i' }, deleted: false })
           const categories = await Category.find()
-          res.render('user/listing', { products, categories, title: 'categories', user })
+          res.render('user/listing', { products, categories, title: 'categories', user ,page})
         } catch (err) {
           next(createError(404))
         }
@@ -343,12 +345,12 @@ module.exports = {
           if (req.query.sort == "name") {
             let products = await admin_products.find().collation({ locale: "en" }).sort({ name: 1 })
             const categories = await Category.find()
-            res.render('user/listing', { products, categories, title: 'categories', user })
+            res.render('user/listing', { products, categories, title: 'categories', user ,page})
           }
           else if (req.query.sort = "price") {
             let products = await admin_products.find().sort({ selling_price: -1 }).collation({ locale: "en", numericOrdering: true })
             const categories = await Category.find()
-            res.render('user/listing', { products, categories, title: 'categories', user })
+            res.render('user/listing', { products, categories, title: 'categories', user ,page})
           }
 
         } catch (err) {
@@ -356,15 +358,15 @@ module.exports = {
         }
       }
       else if (req.query.page) {
-        const page = req.query.page
+        
         let products = await admin_products.find({ deleted: false }).skip((page - 1) * ITEMS_PAGE).limit(ITEMS_PAGE)
         const categories = await Category.find()
-        res.render('user/listing', { products, categories, title: 'categories', user })
+        res.render('user/listing', { products, categories, title: 'categories', user,page })
       }
       else {
         const categories = await Category.find()
         const products = await admin_products.find()
-        res.render('user/listing', { products, categories, title: 'categories', user })
+        res.render('user/listing', { products, categories, title: 'categories', user,page })
       }
     } catch (error) {
       next(createError(404));
