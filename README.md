@@ -8,11 +8,11 @@ PORT=3000
 
 DB_URI = mongodb://localhost:27017/projectname
 
-KEY_ID = <razorpay>
+KEY_ID = razorpay
   
-SECRET_KEY = <razorpay>
+SECRET_KEY = razorpay
   
-mailId  = <mail id for using otp>
+mailId  = mail id for sending otp
   
-password = <password>
+password = password
   
